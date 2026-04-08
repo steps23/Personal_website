@@ -328,9 +328,15 @@ const Services = () => {
               />
               <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" style={{ backgroundColor: service.color }} />
               
-              <div className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 }}
+                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300"
+              >
                 {service.icon}
-              </div>
+              </motion.div>
               <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
               <p className="text-gray-400 mb-8 leading-relaxed flex-grow">{service.description}</p>
               <div className="flex items-center text-sm font-bold mt-auto" style={{ color: service.color }}>
