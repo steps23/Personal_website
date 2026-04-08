@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown } from 'lucide-react';
+import smoothscroll from 'smoothscroll-polyfill';
+
+// Kick off the polyfill!
+smoothscroll.polyfill();
 
 const colors = [
   '#1e1e1e', // Dark Gray
@@ -209,10 +213,16 @@ const Hero = () => {
               transition={{ delay: 3.5, duration: 0.8 }}
               className="flex flex-wrap gap-4"
             >
-              <button className="px-8 py-4 bg-white text-[#1e1e1e] font-bold rounded-full hover:bg-[#ffcc00] transition-colors flex items-center">
+              <button 
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-white text-[#1e1e1e] font-bold rounded-full hover:bg-[#ffcc00] transition-colors flex items-center"
+              >
                 Prenota una call
               </button>
-              <button className="px-8 py-4 bg-transparent border border-gray-600 text-white font-bold rounded-full hover:border-white transition-colors flex items-center">
+              <button 
+                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-transparent border border-gray-600 text-white font-bold rounded-full hover:border-white transition-colors flex items-center"
+              >
                 Scopri i servizi
               </button>
             </motion.div>
@@ -281,7 +291,7 @@ const services = [
 
 const Services = () => {
   return (
-    <section className="py-32 px-6 relative bg-[#121212]">
+    <section id="services" className="py-32 px-6 relative bg-[#121212]">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -336,7 +346,7 @@ const Services = () => {
 
 const Contact = () => {
   return (
-    <section className="py-40 px-6 bg-[#000080] relative overflow-hidden">
+    <section id="contact" className="py-40 px-6 bg-[#000080] relative overflow-hidden">
       <motion.div 
         className="absolute inset-0 opacity-20"
         style={{
