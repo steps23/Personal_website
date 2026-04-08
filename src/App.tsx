@@ -370,7 +370,7 @@ const Services = () => {
                 opacity: { duration: 0.6, delay: index * 0.2 },
                 y: { duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 100 },
                 scale: { duration: 0.6, delay: index * 0.2 },
-                layout: { type: "spring", stiffness: 350, damping: 30 }
+                layout: { type: "spring", stiffness: 200, damping: 25 }
               }}
               whileHover={{ y: -10, transition: { duration: 0.2 } }}
               onClick={() => setExpandedIndex(index)}
@@ -391,7 +391,7 @@ const Services = () => {
                 viewport={{ once: true }}
                 transition={{ 
                   default: { delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 },
-                  layout: { type: "spring", stiffness: 350, damping: 30 }
+                  layout: { type: "spring", stiffness: 200, damping: 25 }
                 }}
                 className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
               >
@@ -403,11 +403,17 @@ const Services = () => {
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
                 </div>
               </motion.div>
-              <motion.h3 layoutId={`title-${index}`} className="text-2xl font-bold mb-4 relative z-10">{service.title}</motion.h3>
-              <motion.p layoutId={`desc-${index}`} className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</motion.p>
-              <motion.div layoutId={`btn-${index}`} className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
+              <motion.h3 
+                layoutId={`title-${index}`} 
+                transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
+                className="text-2xl font-bold mb-4 relative z-10"
+              >
+                {service.title}
+              </motion.h3>
+              <p className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
+              <div className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
                 Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
-              </motion.div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -428,7 +434,7 @@ const Services = () => {
             <div className="fixed inset-0 flex items-center justify-center z-[120] pointer-events-none p-4 py-12 md:p-8">
               <motion.div
                 layoutId={`card-${expandedIndex}`}
-                transition={{ layout: { type: "spring", stiffness: 350, damping: 30 } }}
+                transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
                 className="bg-[#1e1e1e] rounded-3xl border border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden"
               >
                 {/* Close Button */}
@@ -458,7 +464,7 @@ const Services = () => {
                   <div className="shrink-0">
                   <motion.div 
                     layoutId={`icon-container-${expandedIndex}`}
-                    transition={{ layout: { type: "spring", stiffness: 350, damping: 30 } }}
+                    transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
                     className="p-4 md:p-6 bg-[#252526] rounded-2xl inline-block"
                   >
                     <motion.div layoutId={`icon-${expandedIndex}`}>
@@ -469,12 +475,19 @@ const Services = () => {
 
                 {/* Content */}
                 <div className="flex-1 flex flex-col justify-center">
-                  <motion.h3 layoutId={`title-${expandedIndex}`} className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 pr-10">
+                  <motion.h3 
+                    layoutId={`title-${expandedIndex}`} 
+                    transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
+                    className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 pr-10"
+                  >
                     {services[expandedIndex].title}
                   </motion.h3>
                   
                   <motion.p 
-                    layoutId={`desc-${expandedIndex}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ delay: 0.1, duration: 0.3 }}
                     className="text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed"
                   >
                     {services[expandedIndex].description}
@@ -505,7 +518,7 @@ const Services = () => {
                       ))}
                     </ul>
 
-                    <motion.div layoutId={`btn-${expandedIndex}`}>
+                    <motion.div>
                       <button 
                         className="px-6 py-3 md:px-8 md:py-4 bg-[#252526] hover:bg-[#333333] text-white font-bold rounded-xl transition-colors flex items-center w-full justify-center md:w-auto text-sm md:text-base"
                       >
