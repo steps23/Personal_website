@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
@@ -150,28 +150,34 @@ const Hero = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const bgParallax1 = useTransform(scrollY, [0, 1000], [0, 300]);
+  const bgParallax2 = useTransform(scrollY, [0, 1000], [0, -200]);
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 pt-20">
       {/* Background animated elements */}
-      <motion.div 
-        className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] bg-[#000080] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
-        animate={{ 
-          x: [0, 100, 0], 
-          y: [0, -100, 0],
-          scale: [1, 1.2, 1]
-        }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div 
-        className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[#301024] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
-        animate={{ 
-          x: [0, -100, 0], 
-          y: [0, 100, 0],
-          scale: [1, 1.5, 1]
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      />
+      <motion.div style={{ y: bgParallax1 }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
+        <motion.div 
+          className="w-full h-full bg-[#000080] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
+          animate={{ 
+            x: [0, 100, 0], 
+            y: [0, -100, 0],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        />
+      </motion.div>
+      <motion.div style={{ y: bgParallax2 }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
+        <motion.div 
+          className="w-full h-full bg-[#301024] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
+          animate={{ 
+            x: [0, -100, 0], 
+            y: [0, 100, 0],
+            scale: [1, 1.5, 1]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+      </motion.div>
 
       <motion.div style={{ y: y1, opacity }} className="z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center gap-12">
         <div className="flex-1">
@@ -290,9 +296,21 @@ const services = [
 ];
 
 const Services = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  const y1 = useTransform(scrollYProgress, [0, 1], [-150, 150]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [150, -150]);
+
   return (
-    <section id="services" className="py-32 px-6 relative bg-[#121212]">
-      <div className="max-w-7xl mx-auto">
+    <section id="services" ref={ref} className="py-32 px-6 relative bg-[#121212] overflow-hidden">
+      {/* Parallax Background Elements */}
+      <motion.div style={{ y: y1 }} className="absolute top-10 left-10 w-64 h-64 bg-[#0078d7] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
+      <motion.div style={{ y: y2 }} className="absolute bottom-10 right-10 w-80 h-80 bg-[#ffcc00] rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -333,9 +351,13 @@ const Services = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 }}
-                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300"
+                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon"
               >
                 {service.icon}
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-20 translate-y-2 group-hover/icon:translate-y-0">
+                  {service.title}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
+                </div>
               </motion.div>
               <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
               <p className="text-gray-400 mb-8 leading-relaxed flex-grow">{service.description}</p>
