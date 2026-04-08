@@ -338,30 +338,32 @@ const Services = () => {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 100 }}
               whileHover={{ y: -10 }}
-              className="bg-[#1e1e1e] p-8 rounded-3xl border border-gray-800 hover:border-gray-600 transition-all duration-300 group relative overflow-hidden flex flex-col h-full"
+              className="bg-[#1e1e1e] p-8 rounded-3xl border border-gray-800 hover:border-gray-600 transition-all duration-300 group relative flex flex-col h-full"
             >
-              <div 
-                className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ backgroundColor: service.color }}
-              />
-              <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" style={{ backgroundColor: service.color }} />
+              <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+                <div 
+                  className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ backgroundColor: service.color }}
+                />
+                <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" style={{ backgroundColor: service.color }} />
+              </div>
               
               <motion.div 
                 initial={{ opacity: 0, scale: 0.5 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 }}
-                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon"
+                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
               >
                 {service.icon}
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-20 translate-y-2 group-hover/icon:translate-y-0">
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-50 translate-y-2 group-hover/icon:translate-y-0">
                   {service.title}
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
                 </div>
               </motion.div>
-              <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-              <p className="text-gray-400 mb-8 leading-relaxed flex-grow">{service.description}</p>
-              <div className="flex items-center text-sm font-bold mt-auto" style={{ color: service.color }}>
+              <h3 className="text-2xl font-bold mb-4 relative z-10">{service.title}</h3>
+              <p className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
+              <div className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
                 Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
               </div>
             </motion.div>
@@ -440,11 +442,22 @@ const Footer = () => {
   );
 }
 
+const ScrollProgress = () => {
+  const { scrollYProgress } = useScroll();
+  
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1.5 z-[100] bg-gradient-to-r from-[#0078d7] via-[#ffcc00] to-[#00ff00] origin-left"
+      style={{ scaleX: scrollYProgress }}
+    />
+  );
+};
+
 export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="bg-[#1e1e1e] min-h-screen text-white font-sans selection:bg-[#0078d7] selection:text-white overflow-x-hidden">
+    <div className="relative bg-[#1e1e1e] min-h-screen text-white font-sans selection:bg-[#0078d7] selection:text-white overflow-x-hidden">
       <CustomCursor />
       
       <AnimatePresence mode="wait">
@@ -457,7 +470,9 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
+          className="relative"
         >
+          <ScrollProgress />
           <Hero />
           <Services />
           <Contact />
