@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown } from 'lucide-react';
+import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 
 // Kick off the polyfill!
@@ -279,30 +279,59 @@ const services = [
     title: "Audit AI/IT e Roadmap",
     description: "Analisi del contesto aziendale, mappatura dei processi e individuazione dei casi d'uso prioritari per l'adozione dell'AI.",
     icon: <Terminal className="w-8 h-8 text-[#0078d7]" />,
-    color: "#0078d7"
+    color: "#0078d7",
+    details: [
+      "Analisi dei requisiti e studio di fattibilità",
+      "Sviluppo di modelli predittivi e NLP",
+      "Integrazione con sistemi aziendali esistenti",
+      "Monitoraggio e ottimizzazione continua"
+    ]
   },
   {
     title: "Sviluppo e Integrazione",
     description: "Realizzazione di strumenti interni, workflow automatizzati e soluzioni operative specifiche su misura.",
     icon: <Code2 className="w-8 h-8 text-[#ffcc00]" />,
-    color: "#ffcc00"
+    color: "#ffcc00",
+    details: [
+      "Sviluppo di plugin e integrazioni API",
+      "Automazione dei flussi di lavoro aziendali",
+      "Creazione di dashboard personalizzate",
+      "Supporto tecnico e manutenzione"
+    ]
   },
   {
     title: "Formazione Applicata",
     description: "Percorsi formativi pratici per sviluppare competenze operative su AI e strumenti digitali.",
     icon: <BookOpen className="w-8 h-8 text-[#00ff00]" />,
-    color: "#00ff00"
+    color: "#00ff00",
+    details: [
+      "Workshop interattivi sull'Intelligenza Artificiale",
+      "Corsi pratici sull'uso di strumenti digitali",
+      "Materiale didattico personalizzato",
+      "Sessioni di Q&A e supporto post-formazione"
+    ]
   }
 ];
 
 const Services = () => {
   const ref = useRef(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"]
   });
   const y1 = useTransform(scrollYProgress, [0, 1], [-150, 150]);
   const y2 = useTransform(scrollYProgress, [0, 1], [150, -150]);
+
+  // Lock body scroll when expanded
+  useEffect(() => {
+    if (expandedIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [expandedIndex]);
 
   return (
     <section id="services" ref={ref} className="py-32 px-6 relative bg-[#121212] overflow-hidden">
@@ -332,13 +361,20 @@ const Services = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <motion.div
+              layoutId={`card-${index}`}
               key={index}
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 100 }}
-              whileHover={{ y: -10 }}
-              className="bg-[#1e1e1e] p-8 rounded-3xl border border-gray-800 hover:border-gray-600 transition-all duration-300 group relative flex flex-col h-full"
+              transition={{ 
+                opacity: { duration: 0.6, delay: index * 0.2 },
+                y: { duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 100 },
+                scale: { duration: 0.6, delay: index * 0.2 },
+                layout: { type: "spring", stiffness: 350, damping: 30 }
+              }}
+              whileHover={{ y: -10, transition: { duration: 0.2 } }}
+              onClick={() => setExpandedIndex(index)}
+              className="bg-[#1e1e1e] p-8 rounded-3xl border border-gray-800 hover:border-gray-600 transition-colors duration-300 group relative flex flex-col h-full cursor-pointer"
             >
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
                 <div 
@@ -349,27 +385,142 @@ const Services = () => {
               </div>
               
               <motion.div 
+                layoutId={`icon-container-${index}`}
                 initial={{ opacity: 0, scale: 0.5 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 }}
+                transition={{ 
+                  default: { delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 },
+                  layout: { type: "spring", stiffness: 350, damping: 30 }
+                }}
                 className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
               >
-                {service.icon}
+                <motion.div layoutId={`icon-${index}`}>
+                  {service.icon}
+                </motion.div>
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-50 translate-y-2 group-hover/icon:translate-y-0">
-                  {service.title}
+                  Espandi
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
                 </div>
               </motion.div>
-              <h3 className="text-2xl font-bold mb-4 relative z-10">{service.title}</h3>
-              <p className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
-              <div className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
+              <motion.h3 layoutId={`title-${index}`} className="text-2xl font-bold mb-4 relative z-10">{service.title}</motion.h3>
+              <motion.p layoutId={`desc-${index}`} className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</motion.p>
+              <motion.div layoutId={`btn-${index}`} className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
                 Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
       </div>
+
+      {/* Expanded Card Overlay */}
+      <AnimatePresence>
+        {expandedIndex !== null && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setExpandedIndex(null)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110]"
+            />
+            <div className="fixed inset-0 flex items-center justify-center z-[120] pointer-events-none p-4 py-12 md:p-8">
+              <motion.div
+                layoutId={`card-${expandedIndex}`}
+                transition={{ layout: { type: "spring", stiffness: 350, damping: 30 } }}
+                className="bg-[#1e1e1e] rounded-3xl border border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden"
+              >
+                {/* Close Button */}
+                <motion.button 
+                  initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  onClick={() => setExpandedIndex(null)}
+                  className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-white transition-colors z-50 bg-[#252526] p-2 rounded-full"
+                >
+                  <X className="w-5 h-5" />
+                </motion.button>
+
+                {/* Top color bar */}
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute top-0 left-0 w-full h-2 z-40"
+                  style={{ backgroundColor: services[expandedIndex].color }}
+                />
+
+                {/* Scrollable Content */}
+                <div className="overflow-y-auto p-6 md:p-8 flex flex-col md:flex-row gap-5 md:gap-6 w-full h-full">
+                  {/* Icon */}
+                  <div className="shrink-0">
+                  <motion.div 
+                    layoutId={`icon-container-${expandedIndex}`}
+                    transition={{ layout: { type: "spring", stiffness: 350, damping: 30 } }}
+                    className="p-4 md:p-6 bg-[#252526] rounded-2xl inline-block"
+                  >
+                    <motion.div layoutId={`icon-${expandedIndex}`}>
+                      {React.cloneElement(services[expandedIndex].icon as React.ReactElement, { className: "w-10 h-10 md:w-12 md:h-12" })}
+                    </motion.div>
+                  </motion.div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-center">
+                  <motion.h3 layoutId={`title-${expandedIndex}`} className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 pr-10">
+                    {services[expandedIndex].title}
+                  </motion.h3>
+                  
+                  <motion.p 
+                    layoutId={`desc-${expandedIndex}`}
+                    className="text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed"
+                  >
+                    {services[expandedIndex].description}
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "auto" }}
+                    exit={{ opacity: 0, y: -20, height: 0 }}
+                    transition={{ delay: 0.1, duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <h4 className="text-lg md:text-xl font-semibold mb-3 md:mb-4" style={{ color: services[expandedIndex].color }}>
+                      Cosa include:
+                    </h4>
+                    <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                      {services[expandedIndex].details.map((detail, i) => (
+                        <motion.li 
+                          key={i} 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 + (i * 0.1) }}
+                          className="flex items-start text-gray-400 text-sm md:text-base"
+                        >
+                          <ArrowRight className="w-4 h-4 md:w-5 md:h-5 mr-3 shrink-0 mt-0.5" style={{ color: services[expandedIndex].color }} />
+                          <span>{detail}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+
+                    <motion.div layoutId={`btn-${expandedIndex}`}>
+                      <button 
+                        className="px-6 py-3 md:px-8 md:py-4 bg-[#252526] hover:bg-[#333333] text-white font-bold rounded-xl transition-colors flex items-center w-full justify-center md:w-auto text-sm md:text-base"
+                      >
+                        Richiedi informazioni 
+                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" style={{ color: services[expandedIndex].color }} />
+                      </button>
+                    </motion.div>
+                  </motion.div>
+                </div>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
