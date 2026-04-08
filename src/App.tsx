@@ -551,7 +551,7 @@ const Contact = () => {
           <h2 className="text-5xl md:text-8xl font-bold mb-8 text-white tracking-tighter flex flex-wrap justify-center gap-x-4 gap-y-2">
             <StaggeredWord word="We" delay={0.2} />
             <StaggeredWord word="should" delay={0.4} />
-            <StaggeredWord word="get_in_touch())))" color="#ffcc00" delay={0.6} />
+            <StaggeredWord word="get_in_touch()" color="#ffcc00" delay={0.6} />
           </h2>
           <motion.p 
             initial={{ opacity: 0 }}
