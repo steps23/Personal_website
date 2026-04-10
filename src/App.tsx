@@ -154,7 +154,7 @@ const Hero = () => {
   const bgParallax2 = useTransform(scrollY, [0, 1000], [0, -200]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 pt-20">
+    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 pt-32 pb-40">
       {/* Background animated elements */}
       <motion.div style={{ y: bgParallax1 }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
@@ -239,26 +239,15 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
           animate={{ opacity: 1, scale: 1, rotateY: 0 }}
           transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-          className="flex-1 w-full perspective-1000"
+          className="flex-1 w-full perspective-1000 hidden lg:block"
         >
-          <div className="bg-[#1e1e1e] p-6 md:p-8 rounded-2xl border border-gray-800 shadow-2xl relative overflow-hidden group transform transition-transform hover:scale-[1.02] duration-500">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#0078d7] via-[#ffcc00] to-[#00ff00]" />
-            <div className="flex gap-2 mb-6">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
+          {/* Decorative element replacing the code card in hero */}
+          <div className="relative w-full aspect-square max-w-md mx-auto">
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0078d7] to-[#00ff00] rounded-full blur-3xl opacity-20 animate-pulse" />
+            <div className="absolute inset-10 bg-[#1e1e1e] rounded-full border border-gray-800 flex items-center justify-center">
+              <div className="w-32 h-32 border-4 border-[#ffcc00] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '3s' }} />
+              <div className="absolute w-24 h-24 border-4 border-[#0078d7] rounded-full border-b-transparent animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
             </div>
-            <pre className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed">
-              <code className="language-python">
-                <CodeLine delay={1.5}><span className="text-[#569cd6]">def</span> <span className="text-[#dcdcaa]">get_in_touch</span>():</CodeLine>
-                <CodeLine delay={1.7}>{'    '}name  = <span className="text-[#ce9178]">"Stefano Ruggiero"</span></CodeLine>
-                <CodeLine delay={1.9}>{'    '}title = <span className="text-[#ce9178]">"Master's degree in Computer Engineering"</span></CodeLine>
-                <CodeLine delay={2.1}>{'    '}phone = <span className="text-[#ce9178]">"+39 380 133 0809"</span></CodeLine>
-                <CodeLine delay={2.3}>{'    '}email = <span className="text-[#ce9178]">"ruggierostefano2311@gmail.com"</span></CodeLine>
-                <CodeLine delay={2.5}>{'\n'}</CodeLine>
-                <CodeLine delay={2.7}><span className="text-[#dcdcaa]">get_in_touch</span>()</CodeLine>
-              </code>
-            </pre>
           </div>
         </motion.div>
       </motion.div>
@@ -334,7 +323,7 @@ const Services = () => {
   }, [expandedIndex]);
 
   return (
-    <section id="services" ref={ref} className="py-32 px-6 relative bg-[#121212] overflow-hidden">
+    <section id="services" ref={ref} className="pt-48 pb-32 px-6 relative bg-[#121212] overflow-hidden">
       {/* Parallax Background Elements */}
       <motion.div style={{ y: y1 }} className="absolute top-10 left-10 w-64 h-64 bg-[#0078d7] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
       <motion.div style={{ y: y2 }} className="absolute bottom-10 right-10 w-80 h-80 bg-[#ffcc00] rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none" />
@@ -374,8 +363,15 @@ const Services = () => {
               }}
               whileHover={{ y: -10, transition: { duration: 0.2 } }}
               onClick={() => setExpandedIndex(index)}
-              className="bg-[#1e1e1e] p-8 rounded-3xl border border-gray-800 hover:border-gray-600 transition-colors duration-300 group relative flex flex-col h-full cursor-pointer"
+              className="bg-[#1e1e1e] p-8 pt-12 rounded-3xl border border-gray-800 hover:border-gray-600 transition-colors duration-300 group relative flex flex-col h-full cursor-pointer overflow-hidden"
             >
+              {/* Window Dots */}
+              <div className="absolute top-4 left-6 flex gap-2 z-30">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+              </div>
+
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
                 <div 
                   className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -435,8 +431,15 @@ const Services = () => {
               <motion.div
                 layoutId={`card-${expandedIndex}`}
                 transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
-                className="bg-[#1e1e1e] rounded-3xl border border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden"
+                className="bg-[#1e1e1e] rounded-3xl border border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden pt-8"
               >
+                {/* Window Dots */}
+                <div className="absolute top-4 left-6 flex gap-2 z-50">
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                </div>
+
                 {/* Close Button */}
                 <motion.button 
                   initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
@@ -582,7 +585,7 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 1.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
         >
           <button className="px-10 py-5 bg-[#ffcc00] text-[#000080] font-bold rounded-full hover:bg-white hover:scale-105 transition-all duration-300 flex items-center text-lg shadow-[0_0_40px_rgba(255,204,0,0.4)]">
             <Phone className="w-6 h-6 mr-3" />
@@ -592,6 +595,35 @@ const Contact = () => {
             <Mail className="w-6 h-6 mr-3" />
             Scrivimi
           </button>
+        </motion.div>
+
+        {/* Code Card moved to Contact section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 1.8, ease: "easeOut" }}
+          className="w-full max-w-2xl mx-auto text-left"
+        >
+          <div className="bg-[#1e1e1e] p-6 md:p-8 rounded-2xl border border-gray-800 shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#0078d7] via-[#ffcc00] to-[#00ff00]" />
+            <div className="flex gap-2 mb-6">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <pre className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed">
+              <code className="language-python">
+                <CodeLine delay={2.0}><span className="text-[#569cd6]">def</span> <span className="text-[#dcdcaa]">get_in_touch</span>():</CodeLine>
+                <CodeLine delay={2.2}>{'    '}name  = <span className="text-[#ce9178]">"Stefano Ruggiero"</span></CodeLine>
+                <CodeLine delay={2.4}>{'    '}title = <span className="text-[#ce9178]">"Master's degree in Computer Engineering"</span></CodeLine>
+                <CodeLine delay={2.6}>{'    '}phone = <span className="text-[#ce9178]">"+39 380 133 0809"</span></CodeLine>
+                <CodeLine delay={2.8}>{'    '}email = <span className="text-[#ce9178]">"ruggierostefano2311@gmail.com"</span></CodeLine>
+                <CodeLine delay={3.0}>{'\n'}</CodeLine>
+                <CodeLine delay={3.2}><span className="text-[#dcdcaa]">get_in_touch</span>()</CodeLine>
+              </code>
+            </pre>
+          </div>
         </motion.div>
       </div>
     </section>
