@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'motion/react';
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 
@@ -57,11 +57,15 @@ const colors = [
 const Typewriter = ({ text, delay = 0, speed = 30, className = "" }: { text: string, delay?: number, speed?: number, className?: string }) => {
   const [displayed, setDisplayed] = useState("");
   const [started, setStarted] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   useEffect(() => {
-    const startTimer = setTimeout(() => setStarted(true), delay * 1000);
-    return () => clearTimeout(startTimer);
-  }, [delay]);
+    if (isInView) {
+      const startTimer = setTimeout(() => setStarted(true), delay * 1000);
+      return () => clearTimeout(startTimer);
+    }
+  }, [isInView, delay]);
 
   useEffect(() => {
     if (!started) return;
@@ -75,7 +79,7 @@ const Typewriter = ({ text, delay = 0, speed = 30, className = "" }: { text: str
   }, [text, started, speed]);
 
   return (
-    <span className={className}>
+    <span ref={ref} className={className}>
       {displayed}
       <motion.span 
         animate={{ opacity: [1, 0] }} 
@@ -86,14 +90,66 @@ const Typewriter = ({ text, delay = 0, speed = 30, className = "" }: { text: str
   );
 };
 
-const StaggeredWord = ({ word, color = "white", delay = 0 }: { word: string, color?: string, delay?: number }) => {
+const CodeTypewriter = ({ code, delay = 0, speed = 30, className = "" }: { code: { text: string, className?: string }[], delay?: number, speed?: number, className?: string }) => {
+  const [displayedChars, setDisplayedChars] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  const totalChars = code.reduce((acc, token) => acc + token.text.length, 0);
+
+  useEffect(() => {
+    if (isInView) {
+      const startTimer = setTimeout(() => setStarted(true), delay * 1000);
+      return () => clearTimeout(startTimer);
+    }
+  }, [isInView, delay]);
+
+  useEffect(() => {
+    if (!started) return;
+    const interval = setInterval(() => {
+      setDisplayedChars(prev => {
+        if (prev >= totalChars) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, speed);
+    return () => clearInterval(interval);
+  }, [started, speed, totalChars]);
+
+  let charsLeft = displayedChars;
+
+  return (
+    <span ref={ref} className={className}>
+      {code.map((token, index) => {
+        if (charsLeft <= 0) return null;
+        const textToShow = token.text.slice(0, charsLeft);
+        charsLeft -= token.text.length;
+        return (
+          <span key={index} className={token.className}>
+            {textToShow}
+          </span>
+        );
+      })}
+      <motion.span 
+        animate={{ opacity: [1, 0] }} 
+        transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+        className="inline-block w-[0.4em] h-[1em] bg-current align-middle ml-1"
+      />
+    </span>
+  );
+};
+
+const StaggeredWord = ({ word, color, delay = 0 }: { word: string, color?: string, delay?: number }) => {
   return (
     <motion.span
       initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      style={{ color }}
+      style={color ? { color } : undefined}
       className="inline-block"
     >
       {word}
@@ -229,7 +285,7 @@ const Hero = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="text-[#00ff00] font-mono mb-4 tracking-wider uppercase text-sm"
+              className="text-green-600 dark:text-[#00ff00] font-mono mb-4 tracking-wider uppercase text-sm font-bold"
             >
               Stefano Ruggiero
             </motion.p>
@@ -306,8 +362,9 @@ const services = [
   {
     title: "Audit AI/IT e Roadmap",
     description: "Analisi del contesto aziendale, mappatura dei processi e individuazione dei casi d'uso prioritari per l'adozione dell'AI.",
-    icon: <Terminal className="w-8 h-8 text-[#0078d7]" />,
+    icon: <Terminal className="w-8 h-8 text-blue-600 dark:text-[#0078d7]" />,
     color: "#0078d7",
+    textColorClass: "text-blue-600 dark:text-[#0078d7]",
     details: [
       "Analisi dei requisiti e studio di fattibilità",
       "Sviluppo di modelli predittivi e NLP",
@@ -318,8 +375,9 @@ const services = [
   {
     title: "Sviluppo e Integrazione",
     description: "Realizzazione di strumenti interni, workflow automatizzati e soluzioni operative specifiche su misura.",
-    icon: <Code2 className="w-8 h-8 text-[#ffcc00]" />,
+    icon: <Code2 className="w-8 h-8 text-yellow-600 dark:text-[#ffcc00]" />,
     color: "#ffcc00",
+    textColorClass: "text-yellow-600 dark:text-[#ffcc00]",
     details: [
       "Sviluppo di plugin e integrazioni API",
       "Automazione dei flussi di lavoro aziendali",
@@ -330,8 +388,9 @@ const services = [
   {
     title: "Formazione Applicata",
     description: "Percorsi formativi pratici per sviluppare competenze operative su AI e strumenti digitali.",
-    icon: <BookOpen className="w-8 h-8 text-[#00ff00]" />,
+    icon: <BookOpen className="w-8 h-8 text-green-600 dark:text-[#00ff00]" />,
     color: "#00ff00",
+    textColorClass: "text-green-600 dark:text-[#00ff00]",
     details: [
       "Workshop interattivi sull'Intelligenza Artificiale",
       "Corsi pratici sull'uso di strumenti digitali",
@@ -446,7 +505,7 @@ const Services = () => {
                 {service.title}
               </motion.h3>
               <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
-              <div className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
+              <div className={`flex items-center text-sm font-bold mt-auto relative z-10 ${service.textColorClass}`}>
                 Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
               </div>
             </motion.div>
@@ -542,7 +601,7 @@ const Services = () => {
                     transition={{ delay: 0.1, duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <h4 className="text-lg md:text-xl font-semibold mb-3 md:mb-4" style={{ color: services[expandedIndex].color }}>
+                    <h4 className={`text-lg md:text-xl font-semibold mb-3 md:mb-4 ${services[expandedIndex].textColorClass}`}>
                       Cosa include:
                     </h4>
                     <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
@@ -554,7 +613,7 @@ const Services = () => {
                           transition={{ delay: 0.2 + (i * 0.1) }}
                           className="flex items-start text-gray-600 dark:text-gray-400 text-sm md:text-base"
                         >
-                          <ArrowRight className="w-4 h-4 md:w-5 md:h-5 mr-3 shrink-0 mt-0.5" style={{ color: services[expandedIndex].color }} />
+                          <ArrowRight className={`w-4 h-4 md:w-5 md:h-5 mr-3 shrink-0 mt-0.5 ${services[expandedIndex].textColorClass}`} />
                           <span>{detail}</span>
                         </motion.li>
                       ))}
@@ -565,7 +624,7 @@ const Services = () => {
                         className="px-6 py-3 md:px-8 md:py-4 bg-gray-100 dark:bg-[#252526] hover:bg-gray-200 dark:hover:bg-[#333333] text-gray-900 dark:text-white font-bold rounded-xl transition-colors flex items-center w-full justify-center md:w-auto text-sm md:text-base"
                       >
                         Richiedi informazioni 
-                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" style={{ color: services[expandedIndex].color }} />
+                        <ArrowRight className={`w-4 h-4 md:w-5 md:h-5 ml-2 ${services[expandedIndex].textColorClass}`} />
                       </button>
                     </motion.div>
                   </motion.div>
@@ -604,19 +663,17 @@ const Contact = () => {
           className="mb-12"
         >
           <h2 className="text-5xl md:text-8xl font-bold mb-8 text-white tracking-tighter flex flex-wrap justify-center gap-x-4 gap-y-2">
-            <StaggeredWord word="We" delay={0.2} />
-            <StaggeredWord word="should" delay={0.4} />
+            <StaggeredWord word="We" color="white" delay={0.2} />
+            <StaggeredWord word="should" color="white" delay={0.4} />
             <StaggeredWord word="get_in_touch()" color="#ffcc00" delay={0.6} />
           </h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.2, duration: 1 }}
-            className="text-xl text-blue-200 max-w-2xl mx-auto"
-          >
-            Pronto a trasformare le opportunità in soluzioni concrete? Prenota una call conoscitiva senza impegno.
-          </motion.p>
+          <div className="text-xl text-blue-200 max-w-2xl mx-auto min-h-[4rem]">
+            <Typewriter 
+              text="Pronto a trasformare le opportunità in soluzioni concrete? Prenota una call conoscitiva senza impegno."
+              delay={1.2}
+              speed={25}
+            />
+          </div>
         </motion.div>
         
         <motion.div
@@ -651,17 +708,32 @@ const Contact = () => {
               <div className="w-3 h-3 rounded-full bg-yellow-500" />
               <div className="w-3 h-3 rounded-full bg-green-500" />
             </div>
-            <pre className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed">
-              <code className="language-python">
-                <CodeLine delay={2.0}><span className="text-blue-600 dark:text-[#569cd6]">def</span> <span className="text-yellow-600 dark:text-[#dcdcaa]">get_in_touch</span>():</CodeLine>
-                <CodeLine delay={2.2}>{'    '}name  = <span className="text-green-600 dark:text-[#ce9178]">"Stefano Ruggiero"</span></CodeLine>
-                <CodeLine delay={2.4}>{'    '}title = <span className="text-green-600 dark:text-[#ce9178]">"Master's degree in Computer Engineering"</span></CodeLine>
-                <CodeLine delay={2.6}>{'    '}phone = <span className="text-green-600 dark:text-[#ce9178]">"+39 380 133 0809"</span></CodeLine>
-                <CodeLine delay={2.8}>{'    '}email = <span className="text-green-600 dark:text-[#ce9178]">"ruggierostefano2311@gmail.com"</span></CodeLine>
-                <CodeLine delay={3.0}>{'\n'}</CodeLine>
-                <CodeLine delay={3.2}><span className="text-yellow-600 dark:text-[#dcdcaa]">get_in_touch</span>()</CodeLine>
-              </code>
-            </pre>
+            <div className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed whitespace-pre-wrap">
+              <CodeTypewriter 
+                code={[
+                  { text: "def ", className: "text-blue-600 dark:text-[#569cd6]" },
+                  { text: "get_in_touch", className: "text-yellow-600 dark:text-[#dcdcaa]" },
+                  { text: "()", className: "text-yellow-600 dark:text-[#dcdcaa]" },
+                  { text: ":\n", className: "text-gray-800 dark:text-gray-300" },
+                  { text: "    name ", className: "text-blue-400 dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
+                  { text: "\"Stefano Ruggiero\"", className: "text-orange-600 dark:text-[#ce9178]" },
+                  { text: "\n    title", className: "text-blue-400 dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
+                  { text: "\"Master's degree in Computer Engineering\"", className: "text-orange-600 dark:text-[#ce9178]" },
+                  { text: "\n    phone", className: "text-blue-400 dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
+                  { text: "\"+39 380 133 0809\"", className: "text-orange-600 dark:text-[#ce9178]" },
+                  { text: "\n    email", className: "text-blue-400 dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
+                  { text: "\"ruggierostefano2311@gmail.com\"", className: "text-orange-600 dark:text-[#ce9178]" },
+                  { text: "\n\nget_in_touch", className: "text-yellow-600 dark:text-[#dcdcaa]" },
+                  { text: "()", className: "text-yellow-600 dark:text-[#dcdcaa]" }
+                ]}
+                delay={2.0}
+                speed={20}
+              />
+            </div>
           </div>
         </motion.div>
       </div>
