@@ -1,10 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X } from 'lucide-react';
+import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 
 // Kick off the polyfill!
 smoothscroll.polyfill();
+
+const ThemeToggle = () => {
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+    } else {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="fixed top-6 right-6 z-[100] p-3 rounded-full bg-white dark:bg-[#252526] text-gray-900 dark:text-white shadow-lg border border-gray-200 dark:border-gray-700 hover:scale-110 transition-transform"
+      aria-label="Toggle theme"
+    >
+      {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+    </button>
+  );
+};
 
 const colors = [
   '#1e1e1e', // Dark Gray
@@ -81,7 +120,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void; key?: string })
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1e1e1e] overflow-hidden"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 dark:bg-[#1e1e1e] overflow-hidden"
       exit={{ y: '-100%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
     >
       {colors.map((color, index) => (
@@ -105,8 +144,8 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void; key?: string })
         animate={{ opacity: 0.15, rotate: 90, scale: 1.2 }}
         transition={{ duration: 4, ease: "easeInOut" }}
       >
-        <div className="w-[30rem] h-[30rem] md:w-[50rem] md:h-[50rem] border-[2px] border-white rounded-full border-dashed" />
-        <div className="absolute w-[20rem] h-[20rem] md:w-[35rem] md:h-[35rem] border-[1px] border-white rounded-full border-dotted" />
+        <div className="w-[30rem] h-[30rem] md:w-[50rem] md:h-[50rem] border-[2px] border-gray-900 dark:border-white rounded-full border-dashed" />
+        <div className="absolute w-[20rem] h-[20rem] md:w-[35rem] md:h-[35rem] border-[1px] border-gray-900 dark:border-white rounded-full border-dotted" />
       </motion.div>
 
       <motion.div 
@@ -205,7 +244,7 @@ const Hero = () => {
               <StaggeredWord word="tecnologia" color="#ffcc00" delay={1.2} />
             </h1>
             
-            <div className="text-xl text-gray-400 max-w-xl mb-8 leading-relaxed min-h-[4rem]">
+            <div className="text-xl text-gray-600 dark:text-gray-400 max-w-xl mb-8 leading-relaxed min-h-[4rem]">
               <Typewriter 
                 text="Consulenza AI/IT, sviluppo mirato e formazione applicata per PMI, professionisti ed enti di formazione." 
                 delay={1.5} 
@@ -221,13 +260,13 @@ const Hero = () => {
             >
               <button 
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-white text-[#1e1e1e] font-bold rounded-full hover:bg-[#ffcc00] transition-colors flex items-center"
+                className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-[#1e1e1e] font-bold rounded-full hover:bg-[#ffcc00] dark:hover:bg-[#ffcc00] transition-colors flex items-center"
               >
                 Prenota una call
               </button>
               <button 
                 onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-transparent border border-gray-600 text-white font-bold rounded-full hover:border-white transition-colors flex items-center"
+                className="px-8 py-4 bg-transparent border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white font-bold rounded-full hover:border-gray-900 dark:hover:border-white transition-colors flex items-center"
               >
                 Scopri i servizi
               </button>
@@ -244,7 +283,7 @@ const Hero = () => {
           {/* Decorative element replacing the code card in hero */}
           <div className="relative w-full aspect-square max-w-md mx-auto">
             <div className="absolute inset-0 bg-gradient-to-tr from-[#0078d7] to-[#00ff00] rounded-full blur-3xl opacity-20 animate-pulse" />
-            <div className="absolute inset-10 bg-[#1e1e1e] rounded-full border border-gray-800 flex items-center justify-center">
+            <div className="absolute inset-10 bg-white dark:bg-[#1e1e1e] rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center">
               <div className="w-32 h-32 border-4 border-[#ffcc00] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '3s' }} />
               <div className="absolute w-24 h-24 border-4 border-[#0078d7] rounded-full border-b-transparent animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
             </div>
@@ -323,7 +362,7 @@ const Services = () => {
   }, [expandedIndex]);
 
   return (
-    <section id="services" ref={ref} className="pt-48 pb-32 px-6 relative bg-[#121212] overflow-hidden">
+    <section id="services" ref={ref} className="pt-48 pb-32 px-6 relative bg-gray-100 dark:bg-[#121212] overflow-hidden transition-colors duration-300">
       {/* Parallax Background Elements */}
       <motion.div style={{ y: y1 }} className="absolute top-10 left-10 w-64 h-64 bg-[#0078d7] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
       <motion.div style={{ y: y2 }} className="absolute bottom-10 right-10 w-80 h-80 bg-[#ffcc00] rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none" />
@@ -338,11 +377,11 @@ const Services = () => {
         >
           <div className="max-w-2xl">
             <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">Servizi Principali</h2>
-            <p className="text-xl text-gray-400 leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
               Aiuto PMI, professionisti ed enti di formazione a individuare opportunità concrete di adozione AI, validarle con pilot mirati e trasformarle in soluzioni operative.
             </p>
           </div>
-          <button className="hidden md:flex items-center text-white hover:text-[#0078d7] transition-colors font-semibold">
+          <button className="hidden md:flex items-center text-gray-900 dark:text-white hover:text-[#0078d7] dark:hover:text-[#0078d7] transition-colors font-semibold">
             Vedi tutti i servizi <ArrowRight className="ml-2 w-5 h-5" />
           </button>
         </motion.div>
@@ -363,7 +402,7 @@ const Services = () => {
               }}
               whileHover={{ y: -10, transition: { duration: 0.2 } }}
               onClick={() => setExpandedIndex(index)}
-              className="bg-[#1e1e1e] p-8 pt-12 rounded-3xl border border-gray-800 hover:border-gray-600 transition-colors duration-300 group relative flex flex-col h-full cursor-pointer overflow-hidden"
+              className="bg-white dark:bg-[#1e1e1e] p-8 pt-12 rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-colors duration-300 group relative flex flex-col h-full cursor-pointer overflow-hidden"
             >
               {/* Window Dots */}
               <div className="absolute top-4 left-6 flex gap-2 z-30">
@@ -389,14 +428,14 @@ const Services = () => {
                   default: { delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 },
                   layout: { type: "spring", stiffness: 200, damping: 25 }
                 }}
-                className="mb-8 p-4 bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
+                className="mb-8 p-4 bg-gray-50 dark:bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
               >
                 <motion.div layoutId={`icon-${index}`}>
                   {service.icon}
                 </motion.div>
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-50 translate-y-2 group-hover/icon:translate-y-0">
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-50 translate-y-2 group-hover/icon:translate-y-0">
                   Espandi
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 dark:bg-white rotate-45"></div>
                 </div>
               </motion.div>
               <motion.h3 
@@ -406,7 +445,7 @@ const Services = () => {
               >
                 {service.title}
               </motion.h3>
-              <p className="text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
               <div className="flex items-center text-sm font-bold mt-auto relative z-10" style={{ color: service.color }}>
                 Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
               </div>
@@ -431,7 +470,7 @@ const Services = () => {
               <motion.div
                 layoutId={`card-${expandedIndex}`}
                 transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
-                className="bg-[#1e1e1e] rounded-3xl border border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden pt-8"
+                className="bg-white dark:bg-[#1e1e1e] rounded-3xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl pointer-events-auto relative max-h-full flex flex-col shadow-2xl overflow-hidden pt-8"
               >
                 {/* Window Dots */}
                 <div className="absolute top-4 left-6 flex gap-2 z-50">
@@ -447,7 +486,7 @@ const Services = () => {
                   exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
                   transition={{ delay: 0.2, type: "spring" }}
                   onClick={() => setExpandedIndex(null)}
-                  className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-white transition-colors z-50 bg-[#252526] p-2 rounded-full"
+                  className="absolute top-4 right-4 md:top-6 md:right-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors z-50 bg-gray-100 dark:bg-[#252526] p-2 rounded-full"
                 >
                   <X className="w-5 h-5" />
                 </motion.button>
@@ -468,7 +507,7 @@ const Services = () => {
                   <motion.div 
                     layoutId={`icon-container-${expandedIndex}`}
                     transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
-                    className="p-4 md:p-6 bg-[#252526] rounded-2xl inline-block"
+                    className="p-4 md:p-6 bg-gray-50 dark:bg-[#252526] rounded-2xl inline-block"
                   >
                     <motion.div layoutId={`icon-${expandedIndex}`}>
                       {React.cloneElement(services[expandedIndex].icon as React.ReactElement, { className: "w-10 h-10 md:w-12 md:h-12" })}
@@ -491,7 +530,7 @@ const Services = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ delay: 0.1, duration: 0.3 }}
-                    className="text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed"
+                    className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed"
                   >
                     {services[expandedIndex].description}
                   </motion.p>
@@ -513,7 +552,7 @@ const Services = () => {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.2 + (i * 0.1) }}
-                          className="flex items-start text-gray-400 text-sm md:text-base"
+                          className="flex items-start text-gray-600 dark:text-gray-400 text-sm md:text-base"
                         >
                           <ArrowRight className="w-4 h-4 md:w-5 md:h-5 mr-3 shrink-0 mt-0.5" style={{ color: services[expandedIndex].color }} />
                           <span>{detail}</span>
@@ -523,7 +562,7 @@ const Services = () => {
 
                     <motion.div>
                       <button 
-                        className="px-6 py-3 md:px-8 md:py-4 bg-[#252526] hover:bg-[#333333] text-white font-bold rounded-xl transition-colors flex items-center w-full justify-center md:w-auto text-sm md:text-base"
+                        className="px-6 py-3 md:px-8 md:py-4 bg-gray-100 dark:bg-[#252526] hover:bg-gray-200 dark:hover:bg-[#333333] text-gray-900 dark:text-white font-bold rounded-xl transition-colors flex items-center w-full justify-center md:w-auto text-sm md:text-base"
                       >
                         Richiedi informazioni 
                         <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" style={{ color: services[expandedIndex].color }} />
@@ -605,7 +644,7 @@ const Contact = () => {
           transition={{ duration: 0.8, delay: 1.8, ease: "easeOut" }}
           className="w-full max-w-2xl mx-auto text-left"
         >
-          <div className="bg-[#1e1e1e] p-6 md:p-8 rounded-2xl border border-gray-800 shadow-2xl relative overflow-hidden group">
+          <div className="bg-white dark:bg-[#1e1e1e] p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative overflow-hidden group text-gray-900 dark:text-white">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#0078d7] via-[#ffcc00] to-[#00ff00]" />
             <div className="flex gap-2 mb-6">
               <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -614,13 +653,13 @@ const Contact = () => {
             </div>
             <pre className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed">
               <code className="language-python">
-                <CodeLine delay={2.0}><span className="text-[#569cd6]">def</span> <span className="text-[#dcdcaa]">get_in_touch</span>():</CodeLine>
-                <CodeLine delay={2.2}>{'    '}name  = <span className="text-[#ce9178]">"Stefano Ruggiero"</span></CodeLine>
-                <CodeLine delay={2.4}>{'    '}title = <span className="text-[#ce9178]">"Master's degree in Computer Engineering"</span></CodeLine>
-                <CodeLine delay={2.6}>{'    '}phone = <span className="text-[#ce9178]">"+39 380 133 0809"</span></CodeLine>
-                <CodeLine delay={2.8}>{'    '}email = <span className="text-[#ce9178]">"ruggierostefano2311@gmail.com"</span></CodeLine>
+                <CodeLine delay={2.0}><span className="text-blue-600 dark:text-[#569cd6]">def</span> <span className="text-yellow-600 dark:text-[#dcdcaa]">get_in_touch</span>():</CodeLine>
+                <CodeLine delay={2.2}>{'    '}name  = <span className="text-green-600 dark:text-[#ce9178]">"Stefano Ruggiero"</span></CodeLine>
+                <CodeLine delay={2.4}>{'    '}title = <span className="text-green-600 dark:text-[#ce9178]">"Master's degree in Computer Engineering"</span></CodeLine>
+                <CodeLine delay={2.6}>{'    '}phone = <span className="text-green-600 dark:text-[#ce9178]">"+39 380 133 0809"</span></CodeLine>
+                <CodeLine delay={2.8}>{'    '}email = <span className="text-green-600 dark:text-[#ce9178]">"ruggierostefano2311@gmail.com"</span></CodeLine>
                 <CodeLine delay={3.0}>{'\n'}</CodeLine>
-                <CodeLine delay={3.2}><span className="text-[#dcdcaa]">get_in_touch</span>()</CodeLine>
+                <CodeLine delay={3.2}><span className="text-yellow-600 dark:text-[#dcdcaa]">get_in_touch</span>()</CodeLine>
               </code>
             </pre>
           </div>
@@ -632,7 +671,7 @@ const Contact = () => {
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1e1e1e] border-t border-gray-800 py-12 px-6 text-center text-gray-500">
+    <footer className="bg-gray-50 dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-gray-800 py-12 px-6 text-center text-gray-500 transition-colors duration-300">
       <p className="font-mono">© {new Date().getFullYear()} Stefano Ruggiero. All rights reserved.</p>
     </footer>
   );
@@ -653,7 +692,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="relative bg-[#1e1e1e] min-h-screen text-white font-sans selection:bg-[#0078d7] selection:text-white overflow-x-hidden">
+    <div className="relative bg-gray-50 dark:bg-[#1e1e1e] min-h-screen text-gray-900 dark:text-white font-sans selection:bg-[#0078d7] selection:text-white overflow-x-hidden transition-colors duration-300">
+      <ThemeToggle />
       <CustomCursor />
       
       <AnimatePresence mode="wait">
