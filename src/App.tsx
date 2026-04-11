@@ -253,7 +253,7 @@ const Hero = () => {
       {/* Background animated elements */}
       <motion.div style={{ y: bgParallax1 }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#000080] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
+          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-60 dark:opacity-40"
           animate={{ 
             x: [0, 100, 0], 
             y: [0, -100, 0],
@@ -264,7 +264,7 @@ const Hero = () => {
       </motion.div>
       <motion.div style={{ y: bgParallax2 }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#301024] rounded-full mix-blend-screen filter blur-[120px] opacity-40"
+          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-60 dark:opacity-40"
           animate={{ 
             x: [0, -100, 0], 
             y: [0, 100, 0],
