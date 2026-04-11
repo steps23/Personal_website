@@ -480,17 +480,10 @@ const Services = () => {
               
               <motion.div 
                 layoutId={`icon-container-${index}`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ 
-                  default: { delay: index * 0.2 + 0.3, type: "spring", stiffness: 300, damping: 15 },
-                  layout: { type: "spring", stiffness: 200, damping: 25 }
-                }}
-                className="mb-8 p-4 bg-gray-50 dark:bg-[#252526] rounded-2xl inline-block w-fit group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
+                className="mb-8 p-4 bg-gray-50 dark:bg-[#252526] rounded-2xl flex items-center justify-center w-16 h-16 group-hover:scale-110 transition-transform duration-300 relative group/icon z-20"
               >
-                <motion.div layoutId={`icon-${index}`}>
-                  {service.icon}
+                <motion.div layoutId={`icon-${index}`} className="w-full h-full flex items-center justify-center">
+                  {React.cloneElement(service.icon as React.ReactElement, { className: `w-full h-full ${service.textColorClass}` })}
                 </motion.div>
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-[#1e1e1e] text-xs font-bold rounded-md opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg z-50 translate-y-2 group-hover/icon:translate-y-0">
                   Espandi
@@ -499,15 +492,21 @@ const Services = () => {
               </motion.div>
               <motion.h3 
                 layoutId={`title-${index}`} 
-                transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
                 className="text-2xl font-bold mb-4 relative z-10"
+                style={{ originX: 0 }}
               >
                 {service.title}
               </motion.h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
-              <div className={`flex items-center text-sm font-bold mt-auto relative z-10 ${service.textColorClass}`}>
-                Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
-              </div>
+              <motion.div 
+                animate={{ opacity: expandedIndex === index ? 0 : 1 }} 
+                transition={{ duration: 0.2 }}
+                className="flex flex-col flex-grow"
+              >
+                <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed flex-grow relative z-10">{service.description}</p>
+                <div className={`flex items-center text-sm font-bold mt-auto relative z-10 ${service.textColorClass}`}>
+                  Scopri di più <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
@@ -565,11 +564,10 @@ const Services = () => {
                   <div className="shrink-0">
                   <motion.div 
                     layoutId={`icon-container-${expandedIndex}`}
-                    transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
-                    className="p-4 md:p-6 bg-gray-50 dark:bg-[#252526] rounded-2xl inline-block"
+                    className="p-4 md:p-6 bg-gray-50 dark:bg-[#252526] rounded-2xl flex items-center justify-center w-20 h-20 md:w-24 md:h-24"
                   >
-                    <motion.div layoutId={`icon-${expandedIndex}`}>
-                      {React.cloneElement(services[expandedIndex].icon as React.ReactElement, { className: "w-10 h-10 md:w-12 md:h-12" })}
+                    <motion.div layoutId={`icon-${expandedIndex}`} className="w-full h-full flex items-center justify-center">
+                      {React.cloneElement(services[expandedIndex].icon as React.ReactElement, { className: `w-full h-full ${services[expandedIndex].textColorClass}` })}
                     </motion.div>
                   </motion.div>
                 </div>
@@ -578,29 +576,23 @@ const Services = () => {
                 <div className="flex-1 flex flex-col justify-center">
                   <motion.h3 
                     layoutId={`title-${expandedIndex}`} 
-                    transition={{ layout: { type: "spring", stiffness: 200, damping: 25 } }}
                     className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 pr-10"
+                    style={{ originX: 0 }}
                   >
                     {services[expandedIndex].title}
                   </motion.h3>
                   
-                  <motion.p 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ delay: 0.1, duration: 0.3 }}
-                    className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed"
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
                   >
-                    {services[expandedIndex].description}
-                  </motion.p>
+                    <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-4 md:mb-8 leading-relaxed">
+                      {services[expandedIndex].description}
+                    </p>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0, y: -20, height: 0 }}
-                    transition={{ delay: 0.1, duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
+                    <div className="overflow-hidden">
                     <h4 className={`text-lg md:text-xl font-semibold mb-3 md:mb-4 ${services[expandedIndex].textColorClass}`}>
                       Cosa include:
                     </h4>
@@ -627,6 +619,7 @@ const Services = () => {
                         <ArrowRight className={`w-4 h-4 md:w-5 md:h-5 ml-2 ${services[expandedIndex].textColorClass}`} />
                       </button>
                     </motion.div>
+                    </div>
                   </motion.div>
                 </div>
                 </div>
