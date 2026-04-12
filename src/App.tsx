@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, useSpring } from 'motion/react';
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 
 // Kick off the polyfill!
 smoothscroll.polyfill();
 
-const ThemeToggle = () => {
+const ThemeToggle = React.memo(() => {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const ThemeToggle = () => {
       {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
     </button>
   );
-};
+});
 
 const colors = [
   '#1e1e1e', // Dark Gray
@@ -54,7 +54,7 @@ const colors = [
   '#00ff00', // Green
 ];
 
-const Typewriter = ({ text, delay = 0, speed = 30, className = "" }: { text: string, delay?: number, speed?: number, className?: string }) => {
+const Typewriter = React.memo(({ text, delay = 0, speed = 30, className = "" }: { text: string, delay?: number, speed?: number, className?: string }) => {
   const [displayed, setDisplayed] = useState("");
   const [started, setStarted] = useState(false);
   const ref = useRef(null);
@@ -88,9 +88,9 @@ const Typewriter = ({ text, delay = 0, speed = 30, className = "" }: { text: str
       />
     </span>
   );
-};
+});
 
-const CodeTypewriter = ({ code, delay = 0, speed = 30, className = "" }: { code: { text: string, className?: string }[], delay?: number, speed?: number, className?: string }) => {
+const CodeTypewriter = React.memo(({ code, delay = 0, speed = 30, className = "" }: { code: { text: string, className?: string }[], delay?: number, speed?: number, className?: string }) => {
   const [displayedChars, setDisplayedChars] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef(null);
@@ -140,9 +140,9 @@ const CodeTypewriter = ({ code, delay = 0, speed = 30, className = "" }: { code:
       />
     </span>
   );
-};
+});
 
-const StaggeredWord = ({ word, color, delay = 0 }: { word: string, color?: string, delay?: number }) => {
+const StaggeredWord = React.memo(({ word, color, delay = 0 }: { word: string, color?: string, delay?: number }) => {
   return (
     <motion.span
       initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
@@ -155,9 +155,9 @@ const StaggeredWord = ({ word, color, delay = 0 }: { word: string, color?: strin
       {word}
     </motion.span>
   );
-};
+});
 
-const CodeLine = ({ children, delay }: { children: React.ReactNode, delay: number }) => (
+const CodeLine = React.memo(({ children, delay }: { children: React.ReactNode, delay: number }) => (
   <motion.div
     initial={{ opacity: 0, x: -10, filter: "blur(4px)" }}
     whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
@@ -166,9 +166,9 @@ const CodeLine = ({ children, delay }: { children: React.ReactNode, delay: numbe
   >
     {children}
   </motion.div>
-);
+));
 
-const LoadingScreen = ({ onComplete }: { onComplete: () => void; key?: string }) => {
+const LoadingScreen = React.memo(({ onComplete }: { onComplete: () => void; key?: string }) => {
   useEffect(() => {
     const timer = setTimeout(onComplete, 4000);
     return () => clearTimeout(timer);
@@ -216,32 +216,37 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void; key?: string })
       </motion.div>
     </motion.div>
   );
-};
+});
 
-const CustomCursor = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const CustomCursor = React.memo(() => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { stiffness: 1000, damping: 40, mass: 0.1 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX - 16);
+      mouseY.set(e.clientY - 16);
     };
     window.addEventListener('mousemove', updateMousePosition);
     return () => window.removeEventListener('mousemove', updateMousePosition);
-  }, []);
+  }, [mouseX, mouseY]);
 
   return (
     <motion.div
       className="fixed top-0 left-0 w-8 h-8 rounded-full bg-white pointer-events-none z-[100] mix-blend-difference hidden md:block"
-      animate={{
-        x: mousePosition.x - 16,
-        y: mousePosition.y - 16,
+      style={{
+        x: smoothX,
+        y: smoothY,
       }}
-      transition={{ type: "spring", stiffness: 1000, damping: 40, mass: 0.1 }}
     />
   );
-};
+});
 
-const Hero = () => {
+const Hero = React.memo(() => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
@@ -251,9 +256,10 @@ const Hero = () => {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 pt-32 pb-40">
       {/* Background animated elements */}
-      <motion.div style={{ y: bgParallax1 }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
+      <motion.div style={{ y: bgParallax1, willChange: 'transform' }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-60 dark:opacity-40"
+          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-0 dark:opacity-40"
+          style={{ willChange: 'transform, filter' }}
           animate={{ 
             x: [0, 100, 0], 
             y: [0, -100, 0],
@@ -262,9 +268,10 @@ const Hero = () => {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
       </motion.div>
-      <motion.div style={{ y: bgParallax2 }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
+      <motion.div style={{ y: bgParallax2, willChange: 'transform' }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-60 dark:opacity-40"
+          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-0 dark:opacity-40"
+          style={{ willChange: 'transform, filter' }}
           animate={{ 
             x: [0, -100, 0], 
             y: [0, 100, 0],
@@ -356,7 +363,7 @@ const Hero = () => {
       </motion.div>
     </section>
   );
-};
+});
 
 const services = [
   {
@@ -400,7 +407,7 @@ const services = [
   }
 ];
 
-const Services = () => {
+const Services = React.memo(() => {
   const ref = useRef(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const { scrollYProgress } = useScroll({
@@ -423,8 +430,8 @@ const Services = () => {
   return (
     <section id="services" ref={ref} className="pt-48 pb-32 px-6 relative bg-gray-100 dark:bg-[#121212] overflow-hidden transition-colors duration-300">
       {/* Parallax Background Elements */}
-      <motion.div style={{ y: y1 }} className="absolute top-10 left-10 w-64 h-64 bg-[#0078d7] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
-      <motion.div style={{ y: y2 }} className="absolute bottom-10 right-10 w-80 h-80 bg-[#ffcc00] rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none" />
+      <motion.div style={{ y: y1, willChange: 'transform' }} className="absolute top-10 left-10 w-64 h-64 bg-[#0078d7] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
+      <motion.div style={{ y: y2, willChange: 'transform' }} className="absolute bottom-10 right-10 w-80 h-80 bg-[#ffcc00] rounded-full mix-blend-screen filter blur-[120px] opacity-10 pointer-events-none" />
       
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -630,9 +637,9 @@ const Services = () => {
       </AnimatePresence>
     </section>
   );
-};
+});
 
-const Contact = () => {
+const Contact = React.memo(() => {
   return (
     <section id="contact" className="py-40 px-6 bg-[#000080] relative overflow-hidden">
       <motion.div 
@@ -732,26 +739,26 @@ const Contact = () => {
       </div>
     </section>
   );
-};
+});
 
-const Footer = () => {
+const Footer = React.memo(() => {
   return (
     <footer className="bg-gray-50 dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-gray-800 py-12 px-6 text-center text-gray-500 transition-colors duration-300">
       <p className="font-mono">© {new Date().getFullYear()} Stefano Ruggiero. All rights reserved.</p>
     </footer>
   );
-}
+});
 
-const ScrollProgress = () => {
+const ScrollProgress = React.memo(() => {
   const { scrollYProgress } = useScroll();
   
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-1.5 z-[100] bg-gradient-to-r from-[#0078d7] via-[#ffcc00] to-[#00ff00] origin-left"
-      style={{ scaleX: scrollYProgress }}
+      style={{ scaleX: scrollYProgress, willChange: 'transform' }}
     />
   );
-};
+});
 
 export default function App() {
   const [loading, setLoading] = useState(true);
