@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
+import React from 'react';
+import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Code2, BookOpen } from 'lucide-react';
 
 const servicesData = [
@@ -7,172 +7,104 @@ const servicesData = [
     title: "Audit AI/IT e Roadmap Operativa",
     description: "Analisi del contesto aziendale, mappatura dei processi e individuazione dei casi d'uso prioritari per l'adozione dell'AI.",
     icon: <Terminal className="w-6 h-6 text-blue-600 dark:text-[#0078d7]" />,
-    color: "#0078d7",
-    label: "Fase 1"
+    label: "Fase 1",
+    accent: "from-[#0078d7]/30 via-[#0078d7]/10 to-transparent"
   },
   {
     title: "Sviluppo e Integrazione AI su Misura",
     description: "Realizzazione di strumenti interni, workflow automatizzati e soluzioni operative specifiche su misura.",
     icon: <Code2 className="w-6 h-6 text-yellow-600 dark:text-[#ffcc00]" />,
-    color: "#ffcc00",
-    label: "Fase 2"
+    label: "Fase 2",
+    accent: "from-[#ffcc00]/30 via-[#ffcc00]/10 to-transparent"
   },
   {
     title: "Formazione AI/IT Applicata",
     description: "Percorsi formativi pratici per sviluppare competenze operative su AI e strumenti digitali.",
     icon: <BookOpen className="w-6 h-6 text-green-600 dark:text-[#00ff00]" />,
-    color: "#00ff00",
-    label: "Fase 3"
+    label: "Fase 3",
+    accent: "from-[#00ff00]/30 via-[#00ff00]/10 to-transparent"
   }
 ];
 
 export const ServicesSection = React.memo(() => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  // Smooth out the scroll progress
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  // Title Animations (Phase 1 to Phase 2)
-  const titleOpacity = useTransform(smoothProgress, [0, 0.15, 0.25], [1, 1, 0]);
-  const titleY = useTransform(smoothProgress, [0, 0.25], ["0vh", "-30vh"]);
-  const titleScale = useTransform(smoothProgress, [0, 0.25], [1, 0.8]);
-
-  // Arcs Animations (Phase 2 onwards)
-  const arcsOpacity = useTransform(smoothProgress, [0.1, 0.3], [0, 0.6]);
-  const arcsRotate = useTransform(smoothProgress, [0, 1], [0, 90]);
-  const arcsRotateReverse = useTransform(smoothProgress, [0, 1], [0, -90]);
-
-  // General Card Stack Scale & Y
-  // On mobile, we keep them smaller so they fit when stacked/fanned vertically
-  const stackScale = useTransform(smoothProgress, [0, 0.2, 0.4], [isMobile ? 0.8 : 0.6, isMobile ? 0.8 : 0.6, isMobile ? 0.9 : 1]);
-  const stackY = useTransform(smoothProgress, [0, 0.2, 0.4], ["35vh", "35vh", isMobile ? "10vh" : "5vh"]);
-  
-  // Card 1 (Audit)
-  const card1X = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", isMobile ? "0%" : "-110%", isMobile ? "0%" : "-105%"]);
-  const card1Y = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", isMobile ? "-105%" : "10%", isMobile ? "-105%" : "0%"]);
-  const card1Rotate = useTransform(smoothProgress, [0.4, 0.6, 0.8], [0, isMobile ? -5 : -12, 0]);
-
-  // Card 2 (Sviluppo)
-  const card2X = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", "0%", "0%"]);
-  const card2Y = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", isMobile ? "0%" : "-5%", "0%"]);
-  const card2Rotate = useTransform(smoothProgress, [0.4, 0.6, 0.8], [0, 0, 0]);
-
-  // Card 3 (Formazione)
-  const card3X = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", isMobile ? "0%" : "110%", isMobile ? "0%" : "105%"]);
-  const card3Y = useTransform(smoothProgress, [0.4, 0.6, 0.8], ["0%", isMobile ? "105%" : "10%", isMobile ? "105%" : "0%"]);
-  const card3Rotate = useTransform(smoothProgress, [0.4, 0.6, 0.8], [0, isMobile ? 5 : 12, 0]);
-
-  // Symbol object shadow fades out when cards split
-  const shadowOpacity = useTransform(smoothProgress, [0.4, 0.5], [1, 0]);
-
   return (
-    <section 
-      ref={containerRef} 
-      className="relative h-[400vh] bg-[#000080]"
-      id="services"
-    >
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
-        
-        {/* Background Arcs */}
-        <motion.div 
-          className="absolute inset-0 pointer-events-none flex items-center justify-center"
-          style={{ opacity: arcsOpacity }}
-        >
-          <motion.div style={{ rotate: arcsRotate }} className="absolute w-[150vw] h-[150vw] md:w-[100vw] md:h-[100vw] rounded-full border-[1px] border-white/10" />
-          <motion.div style={{ rotate: arcsRotateReverse }} className="absolute w-[120vw] h-[120vw] md:w-[80vw] md:h-[80vw] rounded-full border-[1px] border-white/20 border-dashed" />
-          <motion.div style={{ rotate: arcsRotate }} className="absolute w-[90vw] h-[90vw] md:w-[60vw] md:h-[60vw] rounded-full border-[1px] border-white/10" />
-        </motion.div>
+    <section id="services" className="relative overflow-hidden bg-[#000080] py-28 md:py-36">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_42%)] pointer-events-none" />
+      <motion.div
+        className="absolute -top-24 left-1/2 h-[48rem] w-[48rem] -translate-x-1/2 rounded-full border border-white/10 pointer-events-none"
+        animate={{ rotate: [0, 14, 0], scale: [1, 1.04, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute left-1/2 top-32 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full border border-dashed border-white/12 pointer-events-none"
+        animate={{ rotate: [0, -12, 0], scale: [1.02, 1, 1.02] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-        {/* Phase 1: Giant Heading */}
-        <motion.div 
-          className="absolute top-1/4 md:top-1/3 left-0 w-full text-center z-10 px-4 pointer-events-none"
-          style={{ 
-             opacity: titleOpacity, 
-             y: titleY,
-             scale: titleScale
-          }}
+      <div className="relative mx-auto max-w-7xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto mb-16 max-w-3xl text-center lg:mb-20"
         >
-          <h2 className="text-white font-extrabold uppercase tracking-tighter leading-[0.85] text-[15vw] md:text-[12vw]">
-            <span className="block opacity-90">Area of</span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-white">Expertise</span>
+          <p className="mb-4 font-mono text-sm font-bold uppercase tracking-[0.28em] text-blue-200">
+            Area of Expertise
+          </p>
+          <h2 className="text-5xl font-extrabold tracking-tighter text-white md:text-7xl">
+            Strategia, sviluppo e formazione senza schermate vuote.
           </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-blue-100/80 md:text-xl">
+            Ho trasformato la sezione in una composizione stabile: le card restano sempre visibili e l&apos;animazione accompagna la lettura invece di nasconderla.
+          </p>
         </motion.div>
 
-        {/* Main Card Container */}
-        <motion.div 
-          className="relative w-full max-w-7xl mx-auto flex items-center justify-center z-20 h-[70vh] md:h-[65vh]"
-          style={{ 
-            scale: stackScale,
-            y: stackY
-          }}
-        >
-          {/* Base shadow/glow for the stack */}
-          <motion.div 
-             className="absolute w-[80%] md:w-[85%] max-w-[380px] h-[450px] bg-blue-400/30 rounded-3xl blur-2xl"
-             style={{ opacity: shadowOpacity }}
-          />
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+          {servicesData.map((service, index) => {
+            const isCenter = index === 1;
+            const initialRotate = index === 0 ? -6 : index === 2 ? 6 : 0;
+            const finalRotate = index === 0 ? -3 : index === 2 ? 3 : 0;
 
-          {/* Cards */}
-          {[
-            { x: card1X, y: card1Y, rotate: card1Rotate },
-            { x: card2X, y: card2Y, rotate: card2Rotate },
-            { x: card3X, y: card3Y, rotate: card3Rotate }
-          ].map((transforms, index) => {
-            const service = servicesData[index];
-            
             return (
-              <motion.div
-                key={index}
-                className="absolute w-[90%] md:w-[85%] max-w-[360px] h-[400px] md:h-[480px] bg-white dark:bg-[#1e1e1e] rounded-[2rem] p-6 md:p-8 flex flex-col shadow-2xl border border-gray-100 dark:border-gray-800 group hover:border-[#0078d7] transition-colors duration-500 will-change-transform"
-                style={{
-                  x: transforms.x,
-                  y: transforms.y,
-                  rotateZ: transforms.rotate,
-                  zIndex: 10 + index,
-                }}
+              <motion.article
+                key={service.title}
+                initial={{ opacity: 0, y: 80, rotate: initialRotate, filter: "blur(12px)" }}
+                whileInView={{ opacity: 1, y: isCenter ? -14 : 0, rotate: finalRotate, filter: "blur(0px)" }}
+                whileHover={{ y: isCenter ? -22 : -10, rotate: 0, scale: 1.02 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.85, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className={`group relative flex min-h-[420px] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/95 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.22)] backdrop-blur-sm dark:bg-[#1e1e1e]/95 dark:border-white/8 md:min-h-[480px] md:p-8 ${isCenter ? 'lg:-translate-y-6' : 'lg:translate-y-8'}`}
               >
-                <div className="flex justify-between items-start mb-8 md:mb-12">
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-gray-50 dark:bg-[#252526] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                <div className={`absolute inset-x-0 top-0 h-32 bg-gradient-to-b ${service.accent} pointer-events-none`} />
+
+                <div className="relative flex items-start justify-between mb-8 md:mb-12">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 dark:bg-[#252526] md:h-14 md:w-14">
                     {service.icon}
                   </div>
-                  <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-[#252526] px-3 py-1.5 rounded-full">
+                  <span className="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:bg-[#252526] dark:text-gray-400 md:text-xs">
                     {service.label}
                   </span>
                 </div>
-                
-                <h3 className="text-xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-3 md:mb-4 leading-tight">
+
+                <h3 className="relative mb-3 text-xl font-extrabold leading-tight text-gray-900 dark:text-white md:mb-4 md:text-3xl">
                   {service.title}
                 </h3>
-                
-                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 flex-grow leading-relaxed">
+
+                <p className="relative flex-grow text-sm leading-relaxed text-gray-600 dark:text-gray-400 md:text-base">
                   {service.description}
                 </p>
 
-                <div className="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between cursor-pointer group-hover:text-[#0078d7] transition-colors">
-                  <span className="font-bold text-xs md:text-sm uppercase tracking-wider text-gray-900 dark:text-white group-hover:text-[#0078d7] transition-colors">Scopri il servizio</span>
-                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 transform group-hover:translate-x-2 transition-transform duration-300 text-gray-900 dark:text-white group-hover:text-[#0078d7]" />
+                <div className="relative mt-6 flex items-center justify-between border-t border-gray-100 pt-5 text-gray-900 transition-colors group-hover:text-[#0078d7] dark:border-gray-800 dark:text-white md:mt-8 md:pt-6">
+                  <span className="text-xs font-bold uppercase tracking-wider md:text-sm">
+                    Scopri il servizio
+                  </span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2 md:h-5 md:w-5" />
                 </div>
-              </motion.div>
+              </motion.article>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
