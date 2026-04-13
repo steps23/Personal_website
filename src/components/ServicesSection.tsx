@@ -50,8 +50,8 @@ export const ServicesSection = React.memo(() => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const titleY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
-  const titleOpacity = useTransform(scrollYProgress, [0.6, 0.8], [1, 0]);
+  const titleY = useTransform(scrollYProgress, [0, 0.2], ["0vh", "-10vh"]);
+  const titleOpacity = useTransform(scrollYProgress, [0.2, 0.4], [1, 0]);
 
   return (
     <section ref={containerRef} id="services" className="relative bg-[#000080]" style={{ height: '400vh' }}>
@@ -70,27 +70,35 @@ export const ServicesSection = React.memo(() => {
         {/* Cards container */}
         <div className="relative w-full max-w-6xl mx-auto h-[400px] md:h-[480px] flex items-center justify-center z-10">
           {servicesData.map((service, index) => {
-            // Phase 1: 0.0 - 0.2 -> Slide up into view (stacked)
-            const ySlide = useTransform(scrollYProgress, [0, 0.2], [1000, 0]);
-
-            // Phase 2: 0.2 - 0.4 -> Spread out
-            const spreadX = isMobile ? 0 : (index - 1) * 340;
-            const x = useTransform(scrollYProgress, [0.2, 0.4], [0, spreadX]);
+            // Phase 1: 0.0 - 0.2 -> Slide up into view from bottom of viewport
+            // Phase 2: 0.2 - 0.5 -> Fan out (spread X/Y and rotate Z)
+            // Phase 3: 0.5 - 0.9 -> Sequential Flip
             
-            const spreadY = isMobile ? (index - 1) * 220 : 0;
-            const ySpread = useTransform(scrollYProgress, [0.2, 0.4], [0, spreadY]);
+            const y = useTransform(
+              scrollYProgress,
+              [0, 0.2, 0.5, 1],
+              ["100vh", "0vh", isMobile ? `${(index - 1) * 220}px` : "0vh", isMobile ? `${(index - 1) * 220}px` : "0vh"]
+            );
 
-            // Combine ySlide and ySpread
-            const y = useTransform(() => ySlide.get() + ySpread.get());
+            const x = useTransform(
+              scrollYProgress,
+              [0, 0.2, 0.5, 1],
+              ["0px", "0px", isMobile ? "0px" : `${(index - 1) * 340}px`, isMobile ? "0px" : `${(index - 1) * 340}px`]
+            );
 
-            // Phase 2: Rotate Z while spreading (fan effect)
-            const targetRotateZ = isMobile ? 0 : (index - 1) * 6;
-            const rotateZ = useTransform(scrollYProgress, [0.2, 0.4], [0, targetRotateZ]);
+            const rotateZ = useTransform(
+              scrollYProgress,
+              [0, 0.2, 0.5, 1],
+              [0, 0, isMobile ? 0 : (index - 1) * 6, isMobile ? 0 : (index - 1) * 6]
+            );
 
-            // Phase 3: 0.4 - 0.7 -> Flip cards sequentially
-            const flipStart = 0.4 + index * 0.1;
-            const flipEnd = flipStart + 0.2;
-            const rotateY = useTransform(scrollYProgress, [flipStart, flipEnd], [180, 0]);
+            const flipStart = 0.5 + index * 0.13;
+            const flipEnd = flipStart + 0.13;
+            const rotateY = useTransform(
+              scrollYProgress,
+              [0, flipStart, flipEnd, 1],
+              [180, 180, 0, 0]
+            );
             
             const scale = isMobile ? 0.75 : 1;
             const zIndex = 10 - Math.abs(index - 1);
