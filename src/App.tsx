@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionV
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 import { ServicesSection } from './components/ServicesSection';
+import { AboutSection } from './components/AboutSection';
 
 // Kick off the polyfill!
 smoothscroll.polyfill();
@@ -259,7 +260,7 @@ const Hero = React.memo(() => {
       {/* Background animated elements */}
       <motion.div style={{ y: bgParallax1, willChange: 'transform' }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-0 dark:opacity-40"
+          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-20 dark:opacity-40"
           style={{ willChange: 'transform, filter' }}
           animate={{ 
             x: [0, 100, 0], 
@@ -271,7 +272,7 @@ const Hero = React.memo(() => {
       </motion.div>
       <motion.div style={{ y: bgParallax2, willChange: 'transform' }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
         <motion.div 
-          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-0 dark:opacity-40"
+          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-20 dark:opacity-40"
           style={{ willChange: 'transform, filter' }}
           animate={{ 
             x: [0, -100, 0], 
@@ -397,7 +398,7 @@ const Contact = React.memo(() => {
           <div className="text-xl text-blue-200 max-w-2xl mx-auto min-h-[4rem]">
             <Typewriter 
               text="Pronto a trasformare le opportunità in soluzioni concrete? Prenota una call conoscitiva senza impegno."
-              delay={1.2}
+              delay={0.2}
               speed={25}
             />
           </div>
@@ -438,26 +439,26 @@ const Contact = React.memo(() => {
             <div className="font-mono text-sm md:text-base overflow-x-auto leading-relaxed whitespace-pre-wrap">
               <CodeTypewriter 
                 code={[
-                  { text: "def ", className: "text-blue-600 dark:text-[#569cd6]" },
-                  { text: "get_in_touch", className: "text-yellow-600 dark:text-[#dcdcaa]" },
-                  { text: "()", className: "text-yellow-600 dark:text-[#dcdcaa]" },
-                  { text: ":\n", className: "text-gray-800 dark:text-gray-300" },
-                  { text: "    name ", className: "text-blue-400 dark:text-[#9cdcfe]" },
-                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
-                  { text: "\"Stefano Ruggiero\"", className: "text-orange-600 dark:text-[#ce9178]" },
-                  { text: "\n    title", className: "text-blue-400 dark:text-[#9cdcfe]" },
-                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
-                  { text: "\"Master's degree in Computer Engineering\"", className: "text-orange-600 dark:text-[#ce9178]" },
-                  { text: "\n    phone", className: "text-blue-400 dark:text-[#9cdcfe]" },
-                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
-                  { text: "\"+39 380 133 0809\"", className: "text-orange-600 dark:text-[#ce9178]" },
-                  { text: "\n    email", className: "text-blue-400 dark:text-[#9cdcfe]" },
-                  { text: " = ", className: "text-gray-800 dark:text-gray-300" },
-                  { text: "\"ruggierostefano2311@gmail.com\"", className: "text-orange-600 dark:text-[#ce9178]" },
-                  { text: "\n\nget_in_touch", className: "text-yellow-600 dark:text-[#dcdcaa]" },
-                  { text: "()", className: "text-yellow-600 dark:text-[#dcdcaa]" }
+                  { text: "def ", className: "text-[#0000ff] dark:text-[#569cd6]" },
+                  { text: "get_in_touch", className: "text-[#795e26] dark:text-[#dcdcaa]" },
+                  { text: "()", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: ":\n", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: "    name", className: "text-[#001080] dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: "\"Stefano Ruggiero\"", className: "text-[#a31515] dark:text-[#ce9178]" },
+                  { text: "\n    title", className: "text-[#001080] dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: "\"Master's degree in Computer Engineering\"", className: "text-[#a31515] dark:text-[#ce9178]" },
+                  { text: "\n    phone", className: "text-[#001080] dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: "\"+39 380 133 0809\"", className: "text-[#a31515] dark:text-[#ce9178]" },
+                  { text: "\n    email", className: "text-[#001080] dark:text-[#9cdcfe]" },
+                  { text: " = ", className: "text-gray-900 dark:text-[#d4d4d4]" },
+                  { text: "\"ruggierostefano2311@gmail.com\"", className: "text-[#a31515] dark:text-[#ce9178]" },
+                  { text: "\n\nget_in_touch", className: "text-[#795e26] dark:text-[#dcdcaa]" },
+                  { text: "()", className: "text-gray-900 dark:text-[#d4d4d4]" }
                 ]}
-                delay={2.0}
+                delay={0.5}
                 speed={20}
               />
             </div>
@@ -510,6 +511,7 @@ export default function App() {
           <ScrollProgress />
           <Hero />
           <ServicesSection />
+          <AboutSection />
           <Contact />
           <Footer />
         </motion.main>
