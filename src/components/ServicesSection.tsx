@@ -215,9 +215,7 @@ export const ServicesSection = React.memo(() => {
           className="pointer-events-none absolute inset-x-0 top-[12vh] z-0 px-6 text-center md:top-[14vh]"
         >
           <h2 className="text-5xl font-extrabold uppercase leading-none tracking-tighter text-white md:text-[8rem]">
-            Area of
-            <br />
-            Expertise
+            Servizi
           </h2>
         </motion.div>
 
