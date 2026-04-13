@@ -492,7 +492,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="relative bg-gray-50 dark:bg-[#1e1e1e] min-h-screen text-gray-900 dark:text-white font-sans selection:bg-[#0078d7] selection:text-white overflow-x-hidden transition-colors duration-300">
+    <div className="relative min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-[#0078d7] selection:text-white transition-colors duration-300 dark:bg-[#1e1e1e] dark:text-white">
       <ThemeToggle />
       <CustomCursor />
       

@@ -7,10 +7,23 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
