@@ -95,7 +95,7 @@ const ServiceCard = React.memo(
 
     return (
       <motion.div
-        className="absolute w-[260px] h-[360px] md:w-[320px] md:h-[460px] will-change-transform"
+        className="absolute h-[360px] w-[260px] will-change-transform md:h-[460px] md:w-[320px]"
         style={{
           x,
           y,
@@ -197,6 +197,8 @@ export const ServicesSection = React.memo(() => {
 
   const titleY = useTransform(scrollYProgress, [0, 0.16, 0.3], [0, -20, -80]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.18, 0.3], [1, 1, 0]);
+  const connectorOpacity = useTransform(scrollYProgress, [0, 0.2, 0.45], [0.9, 0.72, 0.16]);
+  const connectorY = useTransform(scrollYProgress, [0, 1], [0, reducedMotion ? 0 : 36]);
 
   const sectionHeight = isMobile ? '440vh' : '380vh';
 
@@ -209,6 +211,49 @@ export const ServicesSection = React.memo(() => {
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
+
+        <motion.div
+          aria-hidden="true"
+          style={{ opacity: connectorOpacity, y: connectorY }}
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[30vh]"
+        >
+          <div className="absolute inset-x-0 top-0 h-full bg-gradient-to-b from-[#000080]/0 via-[#000080]/20 to-transparent" />
+
+          <motion.svg className="absolute inset-x-0 top-0 h-full w-full" viewBox="0 0 1440 320" fill="none">
+            <defs>
+              <linearGradient id="services-entry-line" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#7DBDFF" stopOpacity="0" />
+                <stop offset="0.38" stopColor="#7DBDFF" stopOpacity="0.9" />
+                <stop offset="0.72" stopColor="#0078D7" stopOpacity="0.95" />
+                <stop offset="1" stopColor="#FFCC00" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
+            {[
+              'M0 0 C268 0 326 206 720 206 C1114 206 1172 0 1440 0',
+              'M108 0 C322 0 466 150 720 150 C974 150 1118 0 1332 0',
+              'M238 0 C432 0 552 94 720 94 C888 94 1008 0 1202 0',
+            ].map((d, index) => (
+              <motion.path
+                key={d}
+                d={d}
+                stroke="url(#services-entry-line)"
+                strokeWidth={index === 0 ? 1.6 : 1.05}
+                strokeLinecap="round"
+                initial={{ pathLength: 0.3, opacity: 0.14 }}
+                animate={
+                  reducedMotion
+                    ? { pathLength: 1, opacity: index === 0 ? 0.34 : 0.22 }
+                    : { pathLength: [0.3, 1, 0.3], opacity: [0.12, index === 0 ? 0.5 : 0.28, 0.12] }
+                }
+                transition={{ duration: 5.4 + index * 0.6, delay: index * 0.26, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            ))}
+          </motion.svg>
+
+          <div className="absolute left-1/2 top-0 h-[24vh] w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/70 via-[#7dbdff]/35 to-transparent" />
+          <div className="absolute left-1/2 top-[15vh] h-28 w-28 -translate-x-1/2 rounded-full bg-[#7dbdff]/15 blur-3xl" />
+        </motion.div>
 
         <motion.div
           style={{ y: titleY, opacity: titleOpacity }}
@@ -238,5 +283,3 @@ export const ServicesSection = React.memo(() => {
     </section>
   );
 });
-
-ServicesSection.displayName = 'ServicesSection';

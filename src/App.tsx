@@ -254,45 +254,43 @@ const Hero = React.memo(() => {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end start"],
+    offset: ['start start', 'end start'],
   });
 
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -72]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0.35]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -64]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0.38]);
 
-  const visualY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 140]);
-  const visualScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 0.84]);
+  const visualY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 120]);
+  const visualScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 0.9]);
 
-  const beamHeight = useTransform(scrollYProgress, [0, 1], ["34%", "72%"]);
-  const bridgeOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.35, 0.85, 1]);
+  const leftBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 48]);
+  const rightBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -64]);
+  const haloScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 1.18]);
+  const beamHeight = useTransform(scrollYProgress, [0, 1], ['20%', '68%']);
+  const bridgeOpacity = useTransform(scrollYProgress, [0, 0.16, 1], [0.24, 0.82, 1]);
+  const bridgeY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 34]);
 
-  const leftBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 60]);
-  const rightBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -80]);
-  const haloScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 1.24]);
+  const lineTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 5.4, repeat: Infinity, ease: 'easeInOut' as const };
 
   return (
     <section
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-28 pb-0 dark:bg-[#0f1117]"
     >
-      {/* Ambient background */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-32 top-[10vh] h-[32rem] w-[32rem] rounded-full bg-[#7dbdff]/20 blur-[120px] dark:bg-[#0b3e74]/35"
+        className="pointer-events-none absolute -left-32 top-[8vh] h-[30rem] w-[30rem] rounded-full bg-[#7dbdff]/20 blur-[120px] dark:bg-[#0b3e74]/35"
         style={{ y: leftBlobY }}
       />
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute right-[-12rem] top-[4vh] h-[38rem] w-[38rem] rounded-full bg-[#dceeff]/70 blur-[140px] dark:bg-[#132a63]/45"
+        className="pointer-events-none absolute right-[-10rem] top-[4vh] h-[36rem] w-[36rem] rounded-full bg-[#dceeff]/70 blur-[140px] dark:bg-[#132a63]/45"
         style={{ y: rightBlobY }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[46vh] bg-gradient-to-b from-transparent via-[#d9e7ff]/25 to-[#000080] dark:via-[#132a63]/20"
       />
 
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        {/* Left content */}
         <motion.div
           style={{ y: contentY, opacity: contentOpacity }}
           className="max-w-3xl pt-6 lg:pt-0"
@@ -300,15 +298,15 @@ const Hero = React.memo(() => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
             className="mb-5 text-sm font-bold uppercase tracking-[0.24em] text-green-600 dark:text-[#8df7b8]"
           >
             Stefano Ruggiero
           </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 28, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-[clamp(3.2rem,9vw,7.5rem)] font-black leading-[0.92] tracking-[-0.06em] text-gray-900 dark:text-white"
           >
@@ -322,7 +320,7 @@ const Hero = React.memo(() => {
           <motion.p
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.25, ease: 'easeOut' }}
             className="mt-7 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-300 md:text-[1.35rem]"
           >
             Consulenza AI/IT, sviluppo mirato e formazione applicata per PMI,
@@ -332,10 +330,10 @@ const Hero = React.memo(() => {
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+            transition={{ duration: 0.7, delay: 0.35, ease: 'easeOut' }}
             className="mt-7 flex flex-wrap gap-3"
           >
-            {["Audit / Roadmap", "Sviluppo AI", "Formazione applicata"].map((item) => (
+            {['Audit / Roadmap', 'Sviluppo AI', 'Formazione applicata'].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-gray-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
@@ -348,7 +346,7 @@ const Hero = React.memo(() => {
           <motion.div
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.45, ease: 'easeOut' }}
             className="mt-10 flex flex-wrap gap-4"
           >
             <button
@@ -377,20 +375,18 @@ const Hero = React.memo(() => {
           </motion.p>
         </motion.div>
 
-        {/* Right visual */}
         <motion.div
           style={{ y: visualY, scale: visualScale, opacity: contentOpacity }}
           className="relative mx-auto hidden w-full max-w-[620px] lg:block"
         >
-          <div className="relative aspect-[1.02] w-full">
-            <div className="absolute inset-0 rounded-[2.75rem] border border-white/70 bg-white/55 shadow-[0_30px_120px_rgba(15,23,42,0.18)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/5" />
-            <div className="absolute inset-[2px] rounded-[2.65rem] bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.08))] dark:bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01))]" />
+          <div className="relative aspect-[1.02] w-full overflow-hidden rounded-[2.75rem] border border-white/70 bg-white/50 shadow-[0_30px_120px_rgba(15,23,42,0.16)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/5">
+            <div className="absolute inset-[2px] rounded-[2.65rem] bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.06))] dark:bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01))]" />
             <div
-              className="absolute inset-0 rounded-[2.75rem] opacity-50"
+              className="absolute inset-0 rounded-[2.75rem] opacity-45"
               style={{
                 backgroundImage:
-                  "linear-gradient(rgba(0,120,215,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(0,120,215,0.10) 1px, transparent 1px)",
-                backgroundSize: "42px 42px",
+                  'linear-gradient(rgba(0,120,215,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,120,215,0.08) 1px, transparent 1px)',
+                backgroundSize: '42px 42px',
               }}
             />
 
@@ -401,188 +397,148 @@ const Hero = React.memo(() => {
               fill="none"
             >
               <defs>
-                <linearGradient id="hero-line" x1="120" y1="80" x2="500" y2="520" gradientUnits="userSpaceOnUse">
+                <linearGradient id="hero-signal" x1="88" y1="82" x2="520" y2="540" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#7DBDFF" />
-                  <stop offset="0.5" stopColor="#0078D7" />
+                  <stop offset="0.45" stopColor="#0078D7" />
+                  <stop offset="0.78" stopColor="#63A8FF" />
                   <stop offset="1" stopColor="#FFCC00" />
                 </linearGradient>
-                <radialGradient id="hero-node" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 388) rotate(90) scale(80)">
+                <radialGradient
+                  id="hero-node-core"
+                  cx="0"
+                  cy="0"
+                  r="1"
+                  gradientUnits="userSpaceOnUse"
+                  gradientTransform="translate(322 396) rotate(90) scale(84)"
+                >
                   <stop stopColor="#FFFFFF" />
-                  <stop offset="0.45" stopColor="#DCEEFF" />
+                  <stop offset="0.35" stopColor="#DCEEFF" />
                   <stop offset="1" stopColor="#0078D7" stopOpacity="0" />
                 </radialGradient>
               </defs>
 
               {[
-                "M150 165 C220 220 262 285 320 388",
-                "M490 190 C415 240 370 300 320 388",
-                "M220 470 C255 455 285 430 320 388",
-              ].map((d, i) => (
+                'M92 168 C170 178 238 252 322 396',
+                'M214 96 C258 166 290 252 322 396',
+                'M520 146 C440 202 382 272 322 396',
+                'M546 300 C450 318 392 348 322 396',
+                'M196 534 C250 510 294 470 322 396',
+              ].map((d, index) => (
                 <motion.path
                   key={d}
                   d={d}
-                  stroke="url(#hero-line)"
-                  strokeWidth="2.5"
+                  stroke="url(#hero-signal)"
+                  strokeWidth={index === 0 || index === 2 ? 2.5 : 2}
                   strokeLinecap="round"
-                  initial={{ pathLength: 0.25, opacity: 0.35 }}
+                  initial={{ pathLength: 0.32, opacity: 0.22 }}
                   animate={
                     shouldReduceMotion
-                      ? { pathLength: 1, opacity: 0.5 }
-                      : { pathLength: [0.35, 1, 0.35], opacity: [0.35, 0.8, 0.35] }
+                      ? { pathLength: 1, opacity: 0.45 }
+                      : { pathLength: [0.3, 1, 0.3], opacity: [0.18, 0.78, 0.18] }
                   }
-                  transition={{
-                    duration: 4.5,
-                    delay: i * 0.35,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
+                  transition={{ ...lineTransition, delay: index * 0.32 }}
                 />
               ))}
 
-              <circle cx="320" cy="388" r="86" fill="url(#hero-node)" />
+              <motion.path
+                d="M322 396 C322 450 322 492 322 556"
+                stroke="url(#hero-signal)"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                initial={{ pathLength: 0.2, opacity: 0.18 }}
+                animate={
+                  shouldReduceMotion
+                    ? { pathLength: 1, opacity: 0.38 }
+                    : { pathLength: [0.2, 1, 0.2], opacity: [0.16, 0.58, 0.16] }
+                }
+                transition={{ ...lineTransition, delay: 0.6 }}
+              />
+
+              <circle cx="322" cy="396" r="94" fill="url(#hero-node-core)" />
             </motion.svg>
 
             <motion.div
               style={{ scale: haloScale }}
-              className="absolute left-1/2 top-[58%] h-52 w-52 -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-[62%] h-56 w-56 -translate-x-1/2 -translate-y-1/2"
             >
               <motion.div
-                className="absolute inset-0 rounded-full border border-[#0078d7]/20"
+                className="absolute inset-0 rounded-full border border-[#7dbdff]/20"
                 animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-                transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
               />
               <motion.div
-                className="absolute inset-4 rounded-full border-[3px] border-[#ffcc00] border-l-transparent"
+                className="absolute inset-5 rounded-full border-[2px] border-[#ffcc00]/90 border-l-transparent"
                 animate={shouldReduceMotion ? undefined : { rotate: -360 }}
-                transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
               />
               <motion.div
                 className="absolute inset-10 rounded-full border-[3px] border-[#0078d7] border-b-transparent"
                 animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-                transition={{ duration: 6.5, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 7.2, repeat: Infinity, ease: 'linear' }}
               />
-              <div className="absolute inset-[34%] rounded-full bg-white shadow-[inset_0_0_30px_rgba(0,120,215,0.14)] dark:bg-[#0f1117]" />
+              <motion.div
+                className="absolute inset-[34%] rounded-full bg-white shadow-[0_0_36px_rgba(125,189,255,0.42),inset_0_0_20px_rgba(0,120,215,0.18)] dark:bg-[#0f1117]"
+                animate={shouldReduceMotion ? undefined : { scale: [1, 1.08, 1], opacity: [0.92, 1, 0.92] }}
+                transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+              />
             </motion.div>
 
-            <motion.div
-              className="absolute left-[6%] top-[10%] hidden w-[240px] rounded-[1.75rem] border border-white/80 bg-white/82 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72 sm:block"
-              animate={shouldReduceMotion ? undefined : { y: [0, -10, 0], rotate: [-6, -4, -6] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="mb-4 flex items-center gap-3 text-[#0078d7]">
-                <Terminal className="h-5 w-5" />
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
-                  Audit
-                </span>
-              </div>
-              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                Roadmap operativa
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                Opportunità chiare, priorità e quick wins.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="absolute right-[4%] top-[16%] w-[250px] rounded-[1.75rem] border border-white/80 bg-white/78 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72"
-              animate={shouldReduceMotion ? undefined : { y: [0, 12, 0], rotate: [5, 7, 5] }}
-              transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="mb-4 flex items-center gap-3 text-[#ffcc00]">
-                <Code2 className="h-5 w-5" />
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
-                  Sviluppo
-                </span>
-              </div>
-              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                Soluzioni su misura
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                Workflow, integrazione e strumenti reali.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-[10%] left-[18%] hidden w-[260px] rounded-[1.75rem] border border-white/80 bg-white/78 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72 md:block"
-              animate={shouldReduceMotion ? undefined : { y: [0, -8, 0], rotate: [-2, 1, -2] }}
-              transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="mb-4 flex items-center gap-3 text-green-600 dark:text-[#8df7b8]">
-                <BookOpen className="h-5 w-5" />
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
-                  Formazione
-                </span>
-              </div>
-              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                Adozione concreta
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                Competenze applicate al lavoro quotidiano.
-              </p>
-            </motion.div>
-
-            <motion.div
-              aria-hidden="true"
-              className="absolute left-1/2 top-[66%] w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/0 via-[#7dbdff] to-[#ffffff]/0"
-              style={{ height: beamHeight, opacity: bridgeOpacity }}
-            />
+            <div className="pointer-events-none absolute inset-x-[12%] bottom-[14%] h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
           </div>
         </motion.div>
       </div>
 
-      {/* Bottom bridge into services */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[34vh]">
-        <motion.div
-          className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent via-[#dce8ff]/15 to-[#000080]"
-          style={{ opacity: bridgeOpacity }}
-        />
-        <motion.svg className="absolute inset-x-0 bottom-0 h-full w-full" viewBox="0 0 1440 340" fill="none">
+      <motion.div
+        aria-hidden="true"
+        style={{ opacity: bridgeOpacity, y: bridgeY }}
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[40vh]"
+      >
+        <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent via-[#dce8ff]/10 to-[#000080] dark:via-[#132a63]/10" />
+
+        <motion.svg className="absolute inset-x-0 bottom-0 h-full w-full" viewBox="0 0 1440 420" fill="none">
           <defs>
             <linearGradient id="hero-bridge-line" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
               <stop stopColor="#7DBDFF" stopOpacity="0" />
-              <stop offset="0.5" stopColor="#7DBDFF" stopOpacity="0.9" />
-              <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+              <stop offset="0.35" stopColor="#7DBDFF" stopOpacity="0.85" />
+              <stop offset="0.74" stopColor="#0078D7" stopOpacity="0.95" />
+              <stop offset="1" stopColor="#FFCC00" stopOpacity="0" />
             </linearGradient>
           </defs>
 
-          <motion.path
-            d="M0 60 C290 60 300 225 720 225 C1130 225 1140 60 1440 60"
-            stroke="url(#hero-bridge-line)"
-            strokeWidth="1.5"
-            initial={{ pathLength: 0.4, opacity: 0.25 }}
-            animate={
-              shouldReduceMotion
-                ? { pathLength: 1, opacity: 0.35 }
-                : { pathLength: [0.4, 1, 0.4], opacity: [0.2, 0.6, 0.2] }
-            }
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M160 0 C360 0 480 170 720 170 C970 170 1080 0 1280 0"
-            stroke="url(#hero-bridge-line)"
-            strokeWidth="1"
-            initial={{ pathLength: 0.3, opacity: 0.2 }}
-            animate={
-              shouldReduceMotion
-                ? { pathLength: 1, opacity: 0.28 }
-                : { pathLength: [0.3, 1, 0.3], opacity: [0.16, 0.45, 0.16] }
-            }
-            transition={{ duration: 5.2, delay: 0.5, repeat: Infinity, ease: "easeInOut" }}
-          />
+          {[
+            'M0 76 C280 76 332 266 720 266 C1106 266 1154 76 1440 76',
+            'M120 18 C322 18 470 210 720 210 C968 210 1118 18 1320 18',
+            'M228 0 C434 0 540 154 720 154 C900 154 1008 0 1214 0',
+          ].map((d, index) => (
+            <motion.path
+              key={d}
+              d={d}
+              stroke="url(#hero-bridge-line)"
+              strokeWidth={index === 0 ? 1.7 : 1.1}
+              strokeLinecap="round"
+              initial={{ pathLength: 0.34, opacity: 0.16 }}
+              animate={
+                shouldReduceMotion
+                  ? { pathLength: 1, opacity: index === 0 ? 0.4 : 0.24 }
+                  : { pathLength: [0.34, 1, 0.34], opacity: [0.12, index === 0 ? 0.62 : 0.34, 0.12] }
+              }
+              transition={{ duration: 5.6 + index * 0.7, delay: index * 0.28, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
         </motion.svg>
 
         <motion.div
-          className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/0 via-[#7dbdff]/60 to-transparent"
-          style={{ opacity: bridgeOpacity }}
+          className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/0 via-[#7dbdff]/70 to-transparent"
+          style={{ height: beamHeight }}
         />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-      </div>
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
+      </motion.div>
 
       <motion.button
         onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
         className="absolute bottom-8 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-gray-500 dark:text-gray-300"
         animate={shouldReduceMotion ? undefined : { y: [0, 8, 0] }}
-        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
       >
         Scroll
         <ChevronDown className="h-4 w-4" />
@@ -590,6 +546,7 @@ const Hero = React.memo(() => {
     </section>
   );
 });
+
 
 const Contact = React.memo(() => {
   return (
