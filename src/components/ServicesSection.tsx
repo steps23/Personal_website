@@ -63,7 +63,7 @@ const ServiceCard = React.memo(
     const fanEnd = 0.42;
 
     const spreadX = reducedMotion ? 0 : isMobile ? 0 : (index - 1) * 290;
-    const spreadY = reducedMotion ? 0 : isMobile ? (index - 1) * 170 : 0;
+    const spreadY = reducedMotion ? 0 : isMobile ? index * 420 : 0;
     const spreadRotate = reducedMotion ? 0 : isMobile ? 0 : (index - 1) * 6;
 
     const flipStart = reducedMotion ? 0 : 0.54 + index * 0.1;
@@ -91,7 +91,7 @@ const ServiceCard = React.memo(
       [isMobile ? 0.92 : 0.96, 1, isMobile ? 0.92 : 1, isMobile ? 0.92 : 1]
     );
 
-    const zIndex = 20 - Math.abs(index - 1);
+    const zIndex = isMobile ? 20 - index : 20 - Math.abs(index - 1);
 
     return (
       <motion.div
