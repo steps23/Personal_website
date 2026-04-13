@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, useSpring } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, useSpring, useReducedMotion } from 'motion/react';
 import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import smoothscroll from 'smoothscroll-polyfill';
 import { ServicesSection } from './components/ServicesSection';
@@ -249,120 +249,344 @@ const CustomCursor = React.memo(() => {
 });
 
 const Hero = React.memo(() => {
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
-  const bgParallax1 = useTransform(scrollY, [0, 1000], [0, 300]);
-  const bgParallax2 = useTransform(scrollY, [0, 1000], [0, -200]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -72]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0.35]);
+
+  const visualY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 140]);
+  const visualScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 0.84]);
+
+  const beamHeight = useTransform(scrollYProgress, [0, 1], ["34%", "72%"]);
+  const bridgeOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.35, 0.85, 1]);
+
+  const leftBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 60]);
+  const rightBlobY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : -80]);
+  const haloScale = useTransform(scrollYProgress, [0, 1], [1, shouldReduceMotion ? 1 : 1.24]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 pt-32 pb-40">
-      {/* Background animated elements */}
-      <motion.div style={{ y: bgParallax1, willChange: 'transform' }} className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] pointer-events-none">
-        <motion.div 
-          className="w-full h-full bg-[#000080] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-20 dark:opacity-40"
-          style={{ willChange: 'transform, filter' }}
-          animate={{ 
-            x: [0, 100, 0], 
-            y: [0, -100, 0],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-        />
-      </motion.div>
-      <motion.div style={{ y: bgParallax2, willChange: 'transform' }} className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] pointer-events-none">
-        <motion.div 
-          className="w-full h-full bg-[#301024] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[120px] opacity-20 dark:opacity-40"
-          style={{ willChange: 'transform, filter' }}
-          animate={{ 
-            x: [0, -100, 0], 
-            y: [0, 100, 0],
-            scale: [1, 1.5, 1]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-      </motion.div>
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-28 pb-0 dark:bg-[#0f1117]"
+    >
+      {/* Ambient background */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-32 top-[10vh] h-[32rem] w-[32rem] rounded-full bg-[#7dbdff]/20 blur-[120px] dark:bg-[#0b3e74]/35"
+        style={{ y: leftBlobY }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[-12rem] top-[4vh] h-[38rem] w-[38rem] rounded-full bg-[#dceeff]/70 blur-[140px] dark:bg-[#132a63]/45"
+        style={{ y: rightBlobY }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[46vh] bg-gradient-to-b from-transparent via-[#d9e7ff]/25 to-[#000080] dark:via-[#132a63]/20"
+      />
 
-      <motion.div style={{ y: y1, opacity }} className="z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center gap-12">
-        <div className="flex-1">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          >
-            <motion.p 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="text-green-600 dark:text-[#00ff00] font-mono mb-4 tracking-wider uppercase text-sm font-bold"
-            >
-              Stefano Ruggiero
-            </motion.p>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight leading-tight flex flex-wrap gap-x-3 gap-y-2 md:gap-x-4">
-              <StaggeredWord word="Costruire" delay={0.6} />
-              <StaggeredWord word="un" delay={0.7} />
-              <StaggeredWord word="ponte" delay={0.8} />
-              <StaggeredWord word="tra" delay={0.9} />
-              <StaggeredWord word="opportunità" color="#0078d7" delay={1.0} />
-              <StaggeredWord word="e" delay={1.1} />
-              <StaggeredWord word="tecnologia" color="#ffcc00" delay={1.2} />
-            </h1>
-            
-            <div className="text-xl text-gray-600 dark:text-gray-400 max-w-xl mb-8 leading-relaxed min-h-[4rem]">
-              <Typewriter 
-                text="Consulenza AI/IT, sviluppo mirato e formazione applicata per PMI, professionisti ed enti di formazione." 
-                delay={1.5} 
-                speed={25} 
-              />
-            </div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 3.5, duration: 0.8 }}
-              className="flex flex-wrap gap-4"
-            >
-              <button 
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-[#1e1e1e] font-bold rounded-full hover:bg-[#ffcc00] dark:hover:bg-[#ffcc00] transition-colors flex items-center"
-              >
-                Prenota una call
-              </button>
-              <button 
-                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-transparent border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white font-bold rounded-full hover:border-gray-900 dark:hover:border-white transition-colors flex items-center"
-              >
-                Scopri i servizi
-              </button>
-            </motion.div>
-          </motion.div>
-        </div>
-
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        {/* Left content */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
-          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-          className="flex-1 w-full perspective-1000 hidden lg:block"
+          style={{ y: contentY, opacity: contentOpacity }}
+          className="max-w-3xl pt-6 lg:pt-0"
         >
-          {/* Decorative element replacing the code card in hero */}
-          <div className="relative w-full aspect-square max-w-md mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#0078d7] to-[#00ff00] rounded-full blur-3xl opacity-20 animate-pulse" />
-            <div className="absolute inset-10 bg-white dark:bg-[#1e1e1e] rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center">
-              <div className="w-32 h-32 border-4 border-[#ffcc00] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '3s' }} />
-              <div className="absolute w-24 h-24 border-4 border-[#0078d7] rounded-full border-b-transparent animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
-            </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="mb-5 text-sm font-bold uppercase tracking-[0.24em] text-green-600 dark:text-[#8df7b8]"
+          >
+            Stefano Ruggiero
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 28, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[clamp(3.2rem,9vw,7.5rem)] font-black leading-[0.92] tracking-[-0.06em] text-gray-900 dark:text-white"
+          >
+            <span className="block">Costruire un</span>
+            <span className="block">
+              ponte tra <span className="text-[#0078d7]">opportunità</span> e
+            </span>
+            <span className="block text-[#ffcc00]">tecnologia</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+            className="mt-7 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-300 md:text-[1.35rem]"
+          >
+            Consulenza AI/IT, sviluppo mirato e formazione applicata per PMI,
+            professionisti ed enti di formazione.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+            className="mt-7 flex flex-wrap gap-3"
+          >
+            {["Audit / Roadmap", "Sviluppo AI", "Formazione applicata"].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-gray-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+              >
+                {item}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
+            className="mt-10 flex flex-wrap gap-4"
+          >
+            <button
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="group inline-flex items-center gap-3 rounded-full bg-gray-900 px-8 py-4 font-bold text-white transition-colors hover:bg-[#0078d7] dark:bg-white dark:text-[#111827] dark:hover:bg-[#ffcc00]"
+            >
+              Prenota una call
+              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+
+            <button
+              onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-3 rounded-full border border-gray-300/90 bg-white/55 px-8 py-4 font-bold text-gray-900 backdrop-blur-md transition-colors hover:border-gray-900 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-white"
+            >
+              Scopri i servizi
+            </button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.65, duration: 0.8 }}
+            className="mt-5 text-sm text-gray-500 dark:text-gray-400"
+          >
+            Prima call conoscitiva, senza impegno.
+          </motion.p>
+        </motion.div>
+
+        {/* Right visual */}
+        <motion.div
+          style={{ y: visualY, scale: visualScale, opacity: contentOpacity }}
+          className="relative mx-auto hidden w-full max-w-[620px] lg:block"
+        >
+          <div className="relative aspect-[1.02] w-full">
+            <div className="absolute inset-0 rounded-[2.75rem] border border-white/70 bg-white/55 shadow-[0_30px_120px_rgba(15,23,42,0.18)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/5" />
+            <div className="absolute inset-[2px] rounded-[2.65rem] bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.08))] dark:bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01))]" />
+            <div
+              className="absolute inset-0 rounded-[2.75rem] opacity-50"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(0,120,215,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(0,120,215,0.10) 1px, transparent 1px)",
+                backgroundSize: "42px 42px",
+              }}
+            />
+
+            <motion.svg
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full"
+              viewBox="0 0 640 640"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="hero-line" x1="120" y1="80" x2="500" y2="520" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#7DBDFF" />
+                  <stop offset="0.5" stopColor="#0078D7" />
+                  <stop offset="1" stopColor="#FFCC00" />
+                </linearGradient>
+                <radialGradient id="hero-node" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 388) rotate(90) scale(80)">
+                  <stop stopColor="#FFFFFF" />
+                  <stop offset="0.45" stopColor="#DCEEFF" />
+                  <stop offset="1" stopColor="#0078D7" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              {[
+                "M150 165 C220 220 262 285 320 388",
+                "M490 190 C415 240 370 300 320 388",
+                "M220 470 C255 455 285 430 320 388",
+              ].map((d, i) => (
+                <motion.path
+                  key={d}
+                  d={d}
+                  stroke="url(#hero-line)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0.25, opacity: 0.35 }}
+                  animate={
+                    shouldReduceMotion
+                      ? { pathLength: 1, opacity: 0.5 }
+                      : { pathLength: [0.35, 1, 0.35], opacity: [0.35, 0.8, 0.35] }
+                  }
+                  transition={{
+                    duration: 4.5,
+                    delay: i * 0.35,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+
+              <circle cx="320" cy="388" r="86" fill="url(#hero-node)" />
+            </motion.svg>
+
+            <motion.div
+              style={{ scale: haloScale }}
+              className="absolute left-1/2 top-[58%] h-52 w-52 -translate-x-1/2 -translate-y-1/2"
+            >
+              <motion.div
+                className="absolute inset-0 rounded-full border border-[#0078d7]/20"
+                animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+                transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                className="absolute inset-4 rounded-full border-[3px] border-[#ffcc00] border-l-transparent"
+                animate={shouldReduceMotion ? undefined : { rotate: -360 }}
+                transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                className="absolute inset-10 rounded-full border-[3px] border-[#0078d7] border-b-transparent"
+                animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+                transition={{ duration: 6.5, repeat: Infinity, ease: "linear" }}
+              />
+              <div className="absolute inset-[34%] rounded-full bg-white shadow-[inset_0_0_30px_rgba(0,120,215,0.14)] dark:bg-[#0f1117]" />
+            </motion.div>
+
+            <motion.div
+              className="absolute left-[6%] top-[10%] hidden w-[240px] rounded-[1.75rem] border border-white/80 bg-white/82 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72 sm:block"
+              animate={shouldReduceMotion ? undefined : { y: [0, -10, 0], rotate: [-6, -4, -6] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="mb-4 flex items-center gap-3 text-[#0078d7]">
+                <Terminal className="h-5 w-5" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
+                  Audit
+                </span>
+              </div>
+              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                Roadmap operativa
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                Opportunità chiare, priorità e quick wins.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="absolute right-[4%] top-[16%] w-[250px] rounded-[1.75rem] border border-white/80 bg-white/78 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72"
+              animate={shouldReduceMotion ? undefined : { y: [0, 12, 0], rotate: [5, 7, 5] }}
+              transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="mb-4 flex items-center gap-3 text-[#ffcc00]">
+                <Code2 className="h-5 w-5" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
+                  Sviluppo
+                </span>
+              </div>
+              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                Soluzioni su misura
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                Workflow, integrazione e strumenti reali.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="absolute bottom-[10%] left-[18%] hidden w-[260px] rounded-[1.75rem] border border-white/80 bg-white/78 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f172a]/72 md:block"
+              animate={shouldReduceMotion ? undefined : { y: [0, -8, 0], rotate: [-2, 1, -2] }}
+              transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="mb-4 flex items-center gap-3 text-green-600 dark:text-[#8df7b8]">
+                <BookOpen className="h-5 w-5" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
+                  Formazione
+                </span>
+              </div>
+              <p className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                Adozione concreta
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                Competenze applicate al lavoro quotidiano.
+              </p>
+            </motion.div>
+
+            <motion.div
+              aria-hidden="true"
+              className="absolute left-1/2 top-[66%] w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/0 via-[#7dbdff] to-[#ffffff]/0"
+              style={{ height: beamHeight, opacity: bridgeOpacity }}
+            />
           </div>
         </motion.div>
-      </motion.div>
+      </div>
 
-      <motion.div 
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      {/* Bottom bridge into services */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[34vh]">
+        <motion.div
+          className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent via-[#dce8ff]/15 to-[#000080]"
+          style={{ opacity: bridgeOpacity }}
+        />
+        <motion.svg className="absolute inset-x-0 bottom-0 h-full w-full" viewBox="0 0 1440 340" fill="none">
+          <defs>
+            <linearGradient id="hero-bridge-line" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#7DBDFF" stopOpacity="0" />
+              <stop offset="0.5" stopColor="#7DBDFF" stopOpacity="0.9" />
+              <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          <motion.path
+            d="M0 60 C290 60 300 225 720 225 C1130 225 1140 60 1440 60"
+            stroke="url(#hero-bridge-line)"
+            strokeWidth="1.5"
+            initial={{ pathLength: 0.4, opacity: 0.25 }}
+            animate={
+              shouldReduceMotion
+                ? { pathLength: 1, opacity: 0.35 }
+                : { pathLength: [0.4, 1, 0.4], opacity: [0.2, 0.6, 0.2] }
+            }
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M160 0 C360 0 480 170 720 170 C970 170 1080 0 1280 0"
+            stroke="url(#hero-bridge-line)"
+            strokeWidth="1"
+            initial={{ pathLength: 0.3, opacity: 0.2 }}
+            animate={
+              shouldReduceMotion
+                ? { pathLength: 1, opacity: 0.28 }
+                : { pathLength: [0.3, 1, 0.3], opacity: [0.16, 0.45, 0.16] }
+            }
+            transition={{ duration: 5.2, delay: 0.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.svg>
+
+        <motion.div
+          className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/0 via-[#7dbdff]/60 to-transparent"
+          style={{ opacity: bridgeOpacity }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+      </div>
+
+      <motion.button
+        onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+        className="absolute bottom-8 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-gray-500 dark:text-gray-300"
+        animate={shouldReduceMotion ? undefined : { y: [0, 8, 0] }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <ChevronDown className="w-8 h-8" />
-      </motion.div>
+        Scroll
+        <ChevronDown className="h-4 w-4" />
+      </motion.button>
     </section>
   );
 });
@@ -492,7 +716,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="relative min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-[#0078d7] selection:text-white transition-colors duration-300 dark:bg-[#1e1e1e] dark:text-white">
+    <div className="relative min-h-screen overflow-x-clip bg-gray-50 text-gray-900 transition-colors duration-300 font-sans selection:bg-[#0078d7] selection:text-white dark:bg-[#1e1e1e] dark:text-white">
       <ThemeToggle />
       <CustomCursor />
       
