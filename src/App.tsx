@@ -277,7 +277,7 @@ const Hero = React.memo(() => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-28 pb-0 dark:bg-[#0f1117]"
+      className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-56 pb-48 dark:bg-[#0f1117]"
     >
       <motion.div
         aria-hidden="true"
@@ -536,7 +536,7 @@ const Hero = React.memo(() => {
 
       <motion.button
         onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-        className="absolute bottom-8 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-gray-500 dark:text-gray-300"
+        className="absolute bottom-24 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-gray-500 dark:text-gray-300"
         animate={shouldReduceMotion ? undefined : { y: [0, 8, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
       >
@@ -550,7 +550,7 @@ const Hero = React.memo(() => {
 
 const Contact = React.memo(() => {
   return (
-    <section id="contact" className="py-40 px-6 bg-[#000080] relative overflow-hidden">
+    <section id="contact" className="py-56 px-6 bg-[#000080] relative overflow-hidden">
       <motion.div 
         className="absolute inset-0 opacity-20"
         style={{

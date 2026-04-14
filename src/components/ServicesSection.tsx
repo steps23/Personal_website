@@ -414,7 +414,7 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
     <section
       ref={sectionRef}
       id="services"
-      className="relative bg-[#000080]"
+      className="relative bg-[#000080] py-56"
       style={{ height: DESKTOP_SECTION_HEIGHT }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
@@ -501,7 +501,7 @@ type MobileServicesSectionProps = {
 
 const MobileServicesSection = React.memo(({ reducedMotion }: MobileServicesSectionProps) => {
   return (
-    <section id="services" className="relative bg-[#000080]">
+    <section id="services" className="relative bg-[#000080] py-56">
       <MobileServicesIntro reducedMotion={reducedMotion} />
 
       {servicesData.map((service, index) => (
