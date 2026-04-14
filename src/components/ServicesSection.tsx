@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   motion,
+  useMotionTemplate,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -51,9 +52,9 @@ const MOBILE_BREAKPOINT = 1024;
 const DESKTOP_SECTION_HEIGHT = '380vh';
 const MOBILE_INTRO_HEIGHT = '120svh';
 const MOBILE_STEP_HEIGHT = '152svh';
-const MOBILE_SPACER_HEIGHT = '26svh';
+const MOBILE_SPACER_HEIGHT = '36svh';
 
-const faceHiddenStyles: React.CSSProperties = {
+const face3dStyles: React.CSSProperties = {
   backfaceVisibility: 'hidden',
   WebkitBackfaceVisibility: 'hidden',
   transformStyle: 'preserve-3d',
@@ -72,10 +73,9 @@ const CardFaces = React.memo(({ service }: CardFacesProps) => {
       <div
         className="absolute inset-0 rounded-[2rem] border-[10px] border-white bg-[#f4f4f5] p-6 text-gray-900 shadow-2xl md:border-[12px] md:p-8"
         style={{
-          ...faceHiddenStyles,
-          transform: 'translateZ(1px)',
-          WebkitTransform: 'translateZ(1px)',
-          isolation: 'isolate',
+          ...face3dStyles,
+          transform: 'rotateY(0deg) translateZ(0.1px)',
+          WebkitTransform: 'rotateY(0deg) translateZ(0.1px)',
         }}
       >
         <div className="flex items-start justify-between gap-4">
@@ -106,11 +106,10 @@ const CardFaces = React.memo(({ service }: CardFacesProps) => {
       <div
         className="absolute inset-0 overflow-hidden rounded-[2rem] border-[10px] border-white shadow-2xl md:border-[12px]"
         style={{
-          ...faceHiddenStyles,
-          transform: 'rotateY(180deg) translateZ(1px)',
-          WebkitTransform: 'rotateY(180deg) translateZ(1px)',
+          ...face3dStyles,
+          transform: 'rotateY(180deg) translateZ(0.1px)',
+          WebkitTransform: 'rotateY(180deg) translateZ(0.1px)',
           backgroundColor: '#000080',
-          isolation: 'isolate',
         }}
       >
         <div className="absolute inset-0 bg-[#000080]" />
@@ -162,20 +161,25 @@ const DesktopServiceCard = React.memo(
   ({ service, index, progress, reducedMotion }: DesktopServiceCardProps) => {
     const enterEnd = 0.18;
     const fanEnd = 0.42;
+
     const spreadX = reducedMotion ? 0 : (index - 1) * 290;
     const spreadRotate = reducedMotion ? 0 : (index - 1) * 6;
-    const flipStart = reducedMotion ? 0 : 0.54 + index * 0.1;
-    const flipEnd = reducedMotion ? 0 : flipStart + 0.12;
+
+    const flipStart = reducedMotion ? 0 : 0.54 + index * 0.08;
+    const flipEnd = reducedMotion ? 0 : flipStart + 0.18;
 
     const x = useTransform(progress, [0, enterEnd, fanEnd, 1], [0, 0, spreadX, spreadX]);
     const y = useTransform(progress, [0, enterEnd, fanEnd, 1], [reducedMotion ? 0 : 140, 0, 0, 0]);
     const rotateZ = useTransform(progress, [0, enterEnd, fanEnd, 1], [0, 0, spreadRotate, spreadRotate]);
-    const rotateY = useTransform(
+    const scale = useTransform(progress, [0, enterEnd, fanEnd, 1], [0.96, 1, 1, 1]);
+
+    const flipRotateY = useTransform(
       progress,
       [0, flipStart, flipEnd || 1, 1],
       [reducedMotion ? 0 : 180, reducedMotion ? 0 : 180, 0, 0]
     );
-    const scale = useTransform(progress, [0, enterEnd, fanEnd, 1], [0.96, 1, 1, 1]);
+
+    const flipTransform = useMotionTemplate`perspective(1800px) rotateY(${flipRotateY}deg)`;
 
     return (
       <motion.div
@@ -184,16 +188,21 @@ const DesktopServiceCard = React.memo(
           x,
           y,
           rotateZ,
-          rotateY,
           scale,
           zIndex: 20 - Math.abs(index - 1),
-          transformStyle: 'preserve-3d',
-          WebkitTransformStyle: 'preserve-3d',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
         }}
       >
-        <CardFaces service={service} />
+        <motion.div
+          className="relative h-full w-full"
+          style={{
+            transform: flipTransform,
+            transformStyle: 'preserve-3d',
+            WebkitTransformStyle: 'preserve-3d',
+            willChange: 'transform',
+          }}
+        >
+          <CardFaces service={service} />
+        </motion.div>
       </motion.div>
     );
   }
@@ -217,17 +226,21 @@ const MobileServiceStep = React.memo(
       offset: ['start start', 'end end'],
     });
 
-    const cardY = useTransform(scrollYProgress, [0, 0.16, 0.38, 1], [reducedMotion ? 0 : 120, 0, 0, -24]);
-    const cardScale = useTransform(scrollYProgress, [0, 0.18, 0.42, 1], [0.94, 1, 1, 0.98]);
-    const cardRotateY = useTransform(
+    const cardY = useTransform(scrollYProgress, [0, 0.14, 0.32, 1], [reducedMotion ? 0 : 96, 0, 0, -16]);
+    const cardScale = useTransform(scrollYProgress, [0, 0.14, 0.32, 1], [0.95, 1, 1, 0.985]);
+    const cardOpacity = useTransform(scrollYProgress, [0, 0.06, 0.12, 1], [0.55, 0.9, 1, 1]);
+
+    const flipRotateY = useTransform(
       scrollYProgress,
-      [0, 0.36, 0.68, 1],
+      [0, 0.20, 0.82, 1],
       [reducedMotion ? 0 : 180, reducedMotion ? 0 : 180, 0, 0]
     );
-    const cardOpacity = useTransform(scrollYProgress, [0, 0.06, 0.12, 1], [0.35, 0.85, 1, 1]);
-    const labelOpacity = useTransform(scrollYProgress, [0, 0.12, 0.8, 1], [0, 1, 1, 0.22]);
+
+    const flipTransform = useMotionTemplate`perspective(1800px) rotateY(${flipRotateY}deg)`;
+
+    const labelOpacity = useTransform(scrollYProgress, [0, 0.12, 0.82, 1], [0, 1, 1, 0.22]);
     const labelY = useTransform(scrollYProgress, [0, 1], [12, -12]);
-    const haloOpacity = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.18, 0.42, 0.3, 0.14]);
+    const haloOpacity = useTransform(scrollYProgress, [0, 0.20, 0.75, 1], [0.16, 0.38, 0.28, 0.14]);
 
     return (
       <div ref={stepRef} className="relative bg-[#000080]" style={{ height: MOBILE_STEP_HEIGHT }}>
@@ -250,21 +263,26 @@ const MobileServiceStep = React.memo(
             </p>
           </motion.div>
 
-          <div className="relative z-10 flex h-full items-center justify-center px-6" style={{ perspective: 1800 }}>
+          <div className="relative z-10 flex h-full items-center justify-center px-6">
             <motion.div
-              className="relative h-[360px] w-[260px] will-change-transform sm:h-[420px] sm:w-[300px]"
+              className="h-[360px] w-[260px] will-change-transform sm:h-[420px] sm:w-[300px]"
               style={{
                 y: cardY,
-                rotateY: cardRotateY,
                 scale: cardScale,
                 opacity: cardOpacity,
-                transformStyle: 'preserve-3d',
-                WebkitTransformStyle: 'preserve-3d',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
               }}
             >
-              <CardFaces service={service} />
+              <motion.div
+                className="relative h-full w-full"
+                style={{
+                  transform: flipTransform,
+                  transformStyle: 'preserve-3d',
+                  WebkitTransformStyle: 'preserve-3d',
+                  willChange: 'transform',
+                }}
+              >
+                <CardFaces service={service} />
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -436,7 +454,12 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
                     ? { pathLength: 1, opacity: index === 0 ? 0.34 : 0.22 }
                     : { pathLength: [0.3, 1, 0.3], opacity: [0.12, index === 0 ? 0.5 : 0.28, 0.12] }
                 }
-                transition={{ duration: 5.4 + index * 0.6, delay: index * 0.26, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{
+                  duration: 5.4 + index * 0.6,
+                  delay: index * 0.26,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
               />
             ))}
           </motion.svg>
@@ -454,10 +477,7 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
           </h2>
         </motion.div>
 
-        <div
-          className="relative z-10 mx-auto flex h-full w-full max-w-6xl items-center justify-center px-6"
-          style={{ perspective: 1800 }}
-        >
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl items-center justify-center px-6">
           {servicesData.map((service, index) => (
             <DesktopServiceCard
               key={service.title}
