@@ -265,7 +265,7 @@ const MobileServiceStep = React.memo(
 
           <div className="relative z-10 flex h-full items-center justify-center px-6">
             <motion.div
-              className="h-[360px] w-[260px] will-change-transform sm:h-[420px] sm:w-[300px]"
+              className="h-[390px] w-[282px] will-change-transform sm:h-[440px] sm:w-[316px]"
               style={{
                 y: cardY,
                 scale: cardScale,
