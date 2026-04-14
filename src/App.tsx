@@ -4,6 +4,7 @@ import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun
 import smoothscroll from 'smoothscroll-polyfill';
 import { ServicesSection } from './components/ServicesSection';
 import { AboutSection } from './components/AboutSection';
+import { useSectionBackgroundColor } from './hooks/useSectionBackgroundColor';
 
 // Kick off the polyfill!
 smoothscroll.polyfill();
@@ -270,14 +271,21 @@ const Hero = React.memo(() => {
   const bridgeOpacity = useTransform(scrollYProgress, [0, 0.16, 1], [0.24, 0.82, 1]);
   const bridgeY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 34]);
 
+  const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
+    start: isDark ? '#0f1117' : '#f9fafb',
+    mid: isDark ? '#0f1117' : '#f9fafb',
+    end: '#000080'
+  }));
+
   const lineTransition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 5.4, repeat: Infinity, ease: 'easeInOut' as const };
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-56 pb-48 dark:bg-[#0f1117]"
+      className="relative min-h-screen overflow-hidden px-6 pt-56 pb-48"
+      style={{ backgroundColor }}
     >
       <motion.div
         aria-hidden="true"
@@ -493,7 +501,7 @@ const Hero = React.memo(() => {
         style={{ opacity: bridgeOpacity, y: bridgeY }}
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[40vh]"
       >
-        <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent via-[#dce8ff]/10 to-[#000080] dark:via-[#132a63]/10" />
+        <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-transparent via-[#dce8ff]/10 to-transparent dark:via-[#132a63]/10" />
 
         <motion.svg className="absolute inset-x-0 bottom-0 h-full w-full" viewBox="0 0 1440 420" fill="none">
           <defs>
@@ -543,14 +551,30 @@ const Hero = React.memo(() => {
         Scroll
         <ChevronDown className="h-4 w-4" />
       </motion.button>
-    </section>
+    </motion.section>
   );
 });
 
 
 const Contact = React.memo(() => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const backgroundColor = useSectionBackgroundColor(
+    sectionRef, 
+    (isDark) => ({
+      start: isDark ? '#1e1e1e' : '#f9fafb',
+      mid: '#000080',
+      end: isDark ? '#1e1e1e' : '#f9fafb'
+    }),
+    [0, 0.15, 0.7, 0.9]
+  );
+
   return (
-    <section id="contact" className="py-56 px-6 bg-[#000080] relative overflow-hidden">
+    <motion.section 
+      ref={sectionRef} 
+      id="contact" 
+      className="py-56 px-6 relative overflow-hidden"
+      style={{ backgroundColor }}
+    >
       <motion.div 
         className="absolute inset-0 opacity-20"
         style={{
@@ -646,7 +670,7 @@ const Contact = React.memo(() => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 });
 
