@@ -51,11 +51,13 @@ const MOBILE_BREAKPOINT = 1024;
 const DESKTOP_SECTION_HEIGHT = '380vh';
 const MOBILE_INTRO_HEIGHT = '120svh';
 const MOBILE_STEP_HEIGHT = '152svh';
-const MOBILE_SPACER_HEIGHT = '36svh';
+const MOBILE_SPACER_HEIGHT = '26svh';
 
 const faceHiddenStyles: React.CSSProperties = {
   backfaceVisibility: 'hidden',
   WebkitBackfaceVisibility: 'hidden',
+  transformStyle: 'preserve-3d',
+  WebkitTransformStyle: 'preserve-3d',
 };
 
 type CardFacesProps = {
@@ -73,6 +75,7 @@ const CardFaces = React.memo(({ service }: CardFacesProps) => {
           ...faceHiddenStyles,
           transform: 'translateZ(1px)',
           WebkitTransform: 'translateZ(1px)',
+          isolation: 'isolate',
         }}
       >
         <div className="flex items-start justify-between gap-4">
@@ -101,13 +104,17 @@ const CardFaces = React.memo(({ service }: CardFacesProps) => {
       </div>
 
       <div
-        className="absolute inset-0 overflow-hidden rounded-[2rem] border-[10px] border-white bg-[#000080] shadow-2xl md:border-[12px]"
+        className="absolute inset-0 overflow-hidden rounded-[2rem] border-[10px] border-white shadow-2xl md:border-[12px]"
         style={{
           ...faceHiddenStyles,
           transform: 'rotateY(180deg) translateZ(1px)',
           WebkitTransform: 'rotateY(180deg) translateZ(1px)',
+          backgroundColor: '#000080',
+          isolation: 'isolate',
         }}
       >
+        <div className="absolute inset-0 bg-[#000080]" />
+
         <div
           className="absolute inset-0 opacity-30"
           style={{
@@ -117,13 +124,14 @@ const CardFaces = React.memo(({ service }: CardFacesProps) => {
           }}
         />
 
+        <div className="absolute inset-[10px] rounded-[1.45rem] border border-white/25" />
         <div className="absolute inset-3 rounded-xl border-2 border-white/60" />
         <div className="absolute inset-5 rounded-lg border border-white/40" />
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full border-2 border-white bg-[#000080] shadow-[0_0_40px_rgba(255,255,255,0.28)] md:h-24 md:w-24">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/60 md:h-20 md:w-20">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/10 backdrop-blur-sm md:h-16 md:w-16">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/10 md:h-16 md:w-16">
                 <span className="text-2xl font-black tracking-tighter text-white md:text-3xl">
                   SR
                 </span>
@@ -181,6 +189,8 @@ const DesktopServiceCard = React.memo(
           zIndex: 20 - Math.abs(index - 1),
           transformStyle: 'preserve-3d',
           WebkitTransformStyle: 'preserve-3d',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
         }}
       >
         <CardFaces service={service} />
@@ -250,6 +260,8 @@ const MobileServiceStep = React.memo(
                 opacity: cardOpacity,
                 transformStyle: 'preserve-3d',
                 WebkitTransformStyle: 'preserve-3d',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
               }}
             >
               <CardFaces service={service} />
