@@ -50,10 +50,10 @@ const servicesData: Service[] = [
 ];
 
 const MOBILE_BREAKPOINT = 1024;
-const DESKTOP_SECTION_HEIGHT = '380vh';
-const MOBILE_INTRO_HEIGHT = '120svh';
-const MOBILE_STEP_HEIGHT = '152svh';
-const MOBILE_SPACER_HEIGHT = '36svh';
+const DESKTOP_SECTION_HEIGHT = '360vh';
+const MOBILE_INTRO_HEIGHT = '110svh';
+const MOBILE_STEP_HEIGHT = '140svh';
+const MOBILE_SPACER_HEIGHT = '24svh';
 
 const face3dStyles: React.CSSProperties = {
   backfaceVisibility: 'hidden',
@@ -412,16 +412,16 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
   const connectorY = useTransform(scrollYProgress, [0, 1], [0, reducedMotion ? 0 : 36]);
 
   const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#0f1117' : '#f9fafb',
+    start: isDark ? '#4c56ae' : '#8a8fc2',
     mid: '#000080',
-    end: isDark ? '#1e1e1e' : '#f9fafb'
+    end: isDark ? '#4c56ae' : '#8a8fc2'
   }));
 
   return (
     <motion.section
       ref={sectionRef}
       id="services"
-      className="relative py-56"
+      className="relative py-44"
       style={{ height: DESKTOP_SECTION_HEIGHT, backgroundColor }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
@@ -509,16 +509,16 @@ type MobileServicesSectionProps = {
 const MobileServicesSection = React.memo(({ reducedMotion }: MobileServicesSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#0f1117' : '#f9fafb',
+    start: isDark ? '#4c56ae' : '#8a8fc2',
     mid: '#000080',
-    end: isDark ? '#1e1e1e' : '#f9fafb'
+    end: isDark ? '#4c56ae' : '#8a8fc2'
   }));
 
   return (
     <motion.section 
       ref={sectionRef}
       id="services" 
-      className="relative py-56"
+      className="relative py-44"
       style={{ backgroundColor }}
     >
       <MobileServicesIntro reducedMotion={reducedMotion} />

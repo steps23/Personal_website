@@ -272,9 +272,9 @@ const Hero = React.memo(() => {
   const bridgeY = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 34]);
 
   const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#0f1117' : '#f9fafb',
-    mid: isDark ? '#0f1117' : '#f9fafb',
-    end: '#000080'
+    start: isDark ? '#1e1e1e' : '#f9fafb',
+    mid: isDark ? '#1e1e1e' : '#f9fafb',
+    end: isDark ? '#4c56ae' : '#8a8fc2'
   }));
 
   const lineTransition = shouldReduceMotion
@@ -284,7 +284,7 @@ const Hero = React.memo(() => {
   return (
     <motion.section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden px-6 pt-56 pb-48"
+      className="relative min-h-screen overflow-hidden px-6 pt-56 pb-40"
       style={{ backgroundColor }}
     >
       <motion.div
@@ -561,18 +561,18 @@ const Contact = React.memo(() => {
   const backgroundColor = useSectionBackgroundColor(
     sectionRef, 
     (isDark) => ({
-      start: isDark ? '#1e1e1e' : '#f9fafb',
+      start: isDark ? '#4c56ae' : '#8a8fc2',
       mid: '#000080',
       end: isDark ? '#1e1e1e' : '#f9fafb'
     }),
-    [0, 0.15, 0.7, 0.9]
+    [0, 0.10, 0.74, 0.94]
   );
 
   return (
     <motion.section 
       ref={sectionRef} 
       id="contact" 
-      className="py-56 px-6 relative overflow-hidden"
+      className="py-44 px-6 relative overflow-hidden"
       style={{ backgroundColor }}
     >
       <motion.div 
@@ -676,7 +676,7 @@ const Contact = React.memo(() => {
 
 const Footer = React.memo(() => {
   return (
-    <footer className="bg-gray-50 dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-gray-800 py-12 px-6 text-center text-gray-500 transition-colors duration-300">
+    <footer className="bg-[#f9fafb] dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-gray-800 py-12 px-6 text-center text-gray-500 transition-colors duration-300">
       <p className="font-mono">© {new Date().getFullYear()} Stefano Ruggiero. All rights reserved.</p>
     </footer>
   );
