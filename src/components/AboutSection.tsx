@@ -1,7 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
 import { User, GraduationCap, Briefcase, Award, Code2, Terminal } from 'lucide-react';
-import { useSectionBackgroundColor } from '../hooks/useSectionBackgroundColor';
 
 const BentoCard = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
   <motion.div
@@ -16,20 +15,8 @@ const BentoCard = ({ children, className = "", delay = 0 }: { children: React.Re
 );
 
 export const AboutSection = React.memo(() => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#4c56ae' : '#8a8fc2',
-    mid: isDark ? '#1e1e1e' : '#f9fafb',
-    end: isDark ? '#4c56ae' : '#8a8fc2'
-  }));
-
   return (
-    <motion.section 
-      ref={sectionRef}
-      id="about" 
-      className="py-44 px-6 relative overflow-hidden"
-      style={{ backgroundColor }}
-    >
+    <section id="about" className="py-56 px-6 bg-gray-50 dark:bg-[#1e1e1e] relative overflow-hidden transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,6 +107,6 @@ export const AboutSection = React.memo(() => {
           </BentoCard>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 });

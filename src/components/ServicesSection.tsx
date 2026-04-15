@@ -8,7 +8,6 @@ import {
   type MotionValue,
 } from 'motion/react';
 import { Terminal, Code2, BookOpen } from 'lucide-react';
-import { useSectionBackgroundColor } from '../hooks/useSectionBackgroundColor';
 
 type Service = {
   title: string;
@@ -50,10 +49,10 @@ const servicesData: Service[] = [
 ];
 
 const MOBILE_BREAKPOINT = 1024;
-const DESKTOP_SECTION_HEIGHT = '360vh';
-const MOBILE_INTRO_HEIGHT = '110svh';
-const MOBILE_STEP_HEIGHT = '140svh';
-const MOBILE_SPACER_HEIGHT = '24svh';
+const DESKTOP_SECTION_HEIGHT = '380vh';
+const MOBILE_INTRO_HEIGHT = '120svh';
+const MOBILE_STEP_HEIGHT = '152svh';
+const MOBILE_SPACER_HEIGHT = '36svh';
 
 const face3dStyles: React.CSSProperties = {
   backfaceVisibility: 'hidden',
@@ -244,7 +243,7 @@ const MobileServiceStep = React.memo(
     const haloOpacity = useTransform(scrollYProgress, [0, 0.20, 0.75, 1], [0.16, 0.38, 0.28, 0.14]);
 
     return (
-      <div ref={stepRef} className="relative" style={{ height: MOBILE_STEP_HEIGHT }}>
+      <div ref={stepRef} className="relative bg-[#000080]" style={{ height: MOBILE_STEP_HEIGHT }}>
         <div className="sticky top-0 h-[100svh] overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
           <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/50 via-[#7dbdff]/20 to-transparent" />
@@ -299,7 +298,7 @@ type MobileSpacerProps = {
 };
 
 const MobileSpacer = React.memo(({ height = MOBILE_SPACER_HEIGHT }: MobileSpacerProps) => (
-  <div className="relative" style={{ height }} aria-hidden="true">
+  <div className="relative bg-[#000080]" style={{ height }} aria-hidden="true">
     <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/20 via-[#7dbdff]/12 to-transparent" />
   </div>
 ));
@@ -324,7 +323,7 @@ const MobileServicesIntro = React.memo(({ reducedMotion }: MobileServicesIntroPr
   const connectorY = useTransform(scrollYProgress, [0, 1], [0, reducedMotion ? 0 : 30]);
 
   return (
-    <div ref={introRef} className="relative" style={{ height: MOBILE_INTRO_HEIGHT }}>
+    <div ref={introRef} className="relative bg-[#000080]" style={{ height: MOBILE_INTRO_HEIGHT }}>
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
 
@@ -411,18 +410,12 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
   const connectorOpacity = useTransform(scrollYProgress, [0, 0.2, 0.45], [0.9, 0.72, 0.16]);
   const connectorY = useTransform(scrollYProgress, [0, 1], [0, reducedMotion ? 0 : 36]);
 
-  const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#4c56ae' : '#8a8fc2',
-    mid: '#000080',
-    end: isDark ? '#4c56ae' : '#8a8fc2'
-  }));
-
   return (
-    <motion.section
+    <section
       ref={sectionRef}
       id="services"
-      className="relative py-44"
-      style={{ height: DESKTOP_SECTION_HEIGHT, backgroundColor }}
+      className="relative bg-[#000080] py-56"
+      style={{ height: DESKTOP_SECTION_HEIGHT }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
@@ -496,7 +489,7 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 });
 
@@ -507,20 +500,8 @@ type MobileServicesSectionProps = {
 };
 
 const MobileServicesSection = React.memo(({ reducedMotion }: MobileServicesSectionProps) => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const backgroundColor = useSectionBackgroundColor(sectionRef, (isDark) => ({
-    start: isDark ? '#4c56ae' : '#8a8fc2',
-    mid: '#000080',
-    end: isDark ? '#4c56ae' : '#8a8fc2'
-  }));
-
   return (
-    <motion.section 
-      ref={sectionRef}
-      id="services" 
-      className="relative py-44"
-      style={{ backgroundColor }}
-    >
+    <section id="services" className="relative bg-[#000080] py-56">
       <MobileServicesIntro reducedMotion={reducedMotion} />
 
       {servicesData.map((service, index) => (
@@ -536,7 +517,7 @@ const MobileServicesSection = React.memo(({ reducedMotion }: MobileServicesSecti
       ))}
 
       <MobileSpacer height="18svh" />
-    </motion.section>
+    </section>
   );
 });
 
