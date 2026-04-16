@@ -243,7 +243,7 @@ const MobileServiceStep = React.memo(
     const haloOpacity = useTransform(scrollYProgress, [0, 0.20, 0.75, 1], [0.16, 0.38, 0.28, 0.14]);
 
     return (
-      <div ref={stepRef} className="relative bg-[#000080]" style={{ height: MOBILE_STEP_HEIGHT }}>
+      <div ref={stepRef} className="relative bg-transparent" style={{ height: MOBILE_STEP_HEIGHT }}>
         <div className="sticky top-0 h-[100svh] overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
           <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/50 via-[#7dbdff]/20 to-transparent" />
@@ -298,7 +298,7 @@ type MobileSpacerProps = {
 };
 
 const MobileSpacer = React.memo(({ height = MOBILE_SPACER_HEIGHT }: MobileSpacerProps) => (
-  <div className="relative bg-[#000080]" style={{ height }} aria-hidden="true">
+  <div className="relative bg-transparent" style={{ height }} aria-hidden="true">
     <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#7dbdff]/20 via-[#7dbdff]/12 to-transparent" />
   </div>
 ));
@@ -323,7 +323,7 @@ const MobileServicesIntro = React.memo(({ reducedMotion }: MobileServicesIntroPr
   const connectorY = useTransform(scrollYProgress, [0, 1], [0, reducedMotion ? 0 : 30]);
 
   return (
-    <div ref={introRef} className="relative bg-[#000080]" style={{ height: MOBILE_INTRO_HEIGHT }}>
+    <div ref={introRef} className="relative bg-transparent" style={{ height: MOBILE_INTRO_HEIGHT }}>
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
 
@@ -414,7 +414,7 @@ const DesktopServicesSection = React.memo(({ reducedMotion }: DesktopServicesSec
     <section
       ref={sectionRef}
       id="services"
-      className="relative bg-[#000080] py-56"
+      className="relative bg-transparent py-56"
       style={{ height: DESKTOP_SECTION_HEIGHT }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
@@ -501,7 +501,7 @@ type MobileServicesSectionProps = {
 
 const MobileServicesSection = React.memo(({ reducedMotion }: MobileServicesSectionProps) => {
   return (
-    <section id="services" className="relative bg-[#000080] py-56">
+    <section id="services" className="relative bg-transparent py-56">
       <MobileServicesIntro reducedMotion={reducedMotion} />
 
       {servicesData.map((service, index) => (

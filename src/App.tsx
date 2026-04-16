@@ -4,6 +4,7 @@ import { Terminal, Code2, BookOpen, ArrowRight, Mail, Phone, ChevronDown, X, Sun
 import smoothscroll from 'smoothscroll-polyfill';
 import { ServicesSection } from './components/ServicesSection';
 import { AboutSection } from './components/AboutSection';
+import { BackgroundStage } from './components/BackgroundStage';
 
 // Kick off the polyfill!
 smoothscroll.polyfill();
@@ -276,8 +277,9 @@ const Hero = React.memo(() => {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gray-50 px-6 pt-56 pb-48 dark:bg-[#0f1117]"
+      className="relative min-h-screen overflow-hidden bg-transparent px-6 pt-56 pb-48"
     >
       <motion.div
         aria-hidden="true"
@@ -548,7 +550,7 @@ const Hero = React.memo(() => {
 
 const Contact = React.memo(() => {
   return (
-    <section id="contact" className="py-56 px-6 bg-[#000080] relative overflow-hidden">
+    <section id="contact" className="relative overflow-hidden bg-transparent px-6 py-56">
       <motion.div 
         className="absolute inset-0 opacity-20"
         style={{
@@ -650,7 +652,10 @@ const Contact = React.memo(() => {
 
 const Footer = React.memo(() => {
   return (
-    <footer className="bg-gray-50 dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-gray-800 py-12 px-6 text-center text-gray-500 transition-colors duration-300">
+    <footer
+      id="site-footer"
+      className="relative bg-transparent border-t border-gray-900/10 py-12 px-6 text-center text-gray-600 transition-colors duration-300 dark:border-white/10 dark:text-gray-300"
+    >
       <p className="font-mono">© {new Date().getFullYear()} Stefano Ruggiero. All rights reserved.</p>
     </footer>
   );
@@ -671,9 +676,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-gray-50 text-gray-900 transition-colors duration-300 font-sans selection:bg-[#0078d7] selection:text-white dark:bg-[#1e1e1e] dark:text-white">
+    <div className="relative isolate min-h-screen overflow-x-clip font-sans text-gray-900 transition-colors duration-300 selection:bg-[#0078d7] selection:text-white dark:text-white">
       <ThemeToggle />
       <CustomCursor />
+      <BackgroundStage />
       
       <AnimatePresence mode="wait">
         {loading && <LoadingScreen key="loading" onComplete={() => setLoading(false)} />}
@@ -685,7 +691,7 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative"
+          className="relative z-10"
         >
           <ScrollProgress />
           <Hero />

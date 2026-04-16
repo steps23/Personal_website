@@ -16,7 +16,7 @@ const BentoCard = ({ children, className = "", delay = 0 }: { children: React.Re
 
 export const AboutSection = React.memo(() => {
   return (
-    <section id="about" className="py-56 px-6 bg-gray-50 dark:bg-[#1e1e1e] relative overflow-hidden transition-colors duration-300">
+    <section id="about" className="relative overflow-hidden bg-transparent px-6 py-56 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
